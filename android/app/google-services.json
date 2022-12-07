@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "299880148727",
+    "project_id": "notesapp-th-bingen",
+    "storage_bucket": "notesapp-th-bingen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299880148727:android:4a25874cdce4675008adf2",
+        "android_client_info": {
+          "package_name": "de.lemmings.notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "299880148727-e19vbcf0se9t0q2r03sdt5ahckd8r24c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhiJZJCPhnoalDgOUwqxh7BZ9NUX_oW1I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "299880148727-e19vbcf0se9t0q2r03sdt5ahckd8r24c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
