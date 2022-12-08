@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:notes/services/exceptions.dart';
 import 'package:notes/services/firebase_auth_service.dart';
+import 'package:notes/views/show_error.dart';
 
-import '../data/Notes_user.dart';
+import '../data/notes_user.dart';
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
@@ -33,7 +35,10 @@ class _SignUpViewState extends State<SignUpView> {
         title: const Text("Sign up"),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, "login", (route) => false);
+            },
             child: const Text(
               "log in",
               style: TextStyle(
@@ -89,13 +94,21 @@ class _SignUpViewState extends State<SignUpView> {
                 try {
                   final email = _emailController.text;
                   final password = _passwordController.text;
-                  NotesUser notesUser = await FirebaseAuthService()
-                      .signUpWithEmailAndPassword(
-                          email: email, password: password);
-                  print(notesUser.email);
-                } catch (e) { 
-                  // exception to be handeld correctly
-                  print("hi");
+                  if (email.isNotEmpty && password.isNotEmpty) {
+                    NotesUser notesUser = await FirebaseAuthService()
+                        .signUpWithEmailAndPassword(
+                            email: email, password: password);
+                  }
+                } on WeakPasswordException {
+                  showErrorDialog("Weak Password!", context);
+                } on EmailIsAlreadyUsedException {
+                  showErrorDialog(
+                      "There is already an account with this email!", context);
+                } on InvalidEmailException {
+                  showErrorDialog("Invalid Email!", context);
+                } catch (e) {
+                  showErrorDialog(
+                      "Something wring happend. Please try again", context);
                 }
               },
               child: Text(

@@ -1,11 +1,15 @@
+
+// user should be able to delete his account
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 class NotesUser{
   final String email;
+  final bool isEmailVerified;
 
-  NotesUser(this.email);
+  NotesUser({required this.email, required this.isEmailVerified});
   
-  factory NotesUser.fromFirebaseUser(UserCredential userCredential){
-    return NotesUser(userCredential.user!.email!);
+  factory NotesUser.fromFirebaseUser(User firebaseUser){
+    return NotesUser(email: firebaseUser.email!, isEmailVerified: firebaseUser.emailVerified);
   }
 }
