@@ -5,8 +5,6 @@ import 'package:notes/services/exceptions.dart';
 class FirebaseAuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  // exceptions !!!
-
   Future<NotesUser> signUpWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
@@ -55,7 +53,6 @@ class FirebaseAuthService {
 
 // password reser should be available!!!
 
-  // use this stream in main!!
   Stream<NotesUser?> trackUserAuthChanges() {
     return _firebaseAuth.userChanges().map((user) {
       return NotesUser.fromFirebaseUser(user!);

@@ -14,9 +14,6 @@ void main() async {
     theme: ThemeData(),
     home: const NotesApp(),
     routes: {
-      'App': (context) {
-        return const NotesApp();
-      },
       'login': (context) {
         return const LogInView();
       },
@@ -33,9 +30,6 @@ class NotesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        //dont use streams of firebase, make a stream for notesUsers
-        // authstatechanges or userchanges!?!??
-        // logging in is not being notified!!!
         stream: FirebaseAuthService().trackUserAuthChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -45,24 +39,23 @@ class NotesApp extends StatelessWidget {
             if (snapshot.hasData) {
               print("snapshot has data!!!!!!");
               print(snapshot.data!.email);
-              if(snapshot.data!.isEmailVerified){
+              if (snapshot.data!.isEmailVerified) {
                 print("email is verified");
-                return HomeView();
-              }
-              else{
+                return HomeView(notesUser: snapshot.data!,);
+              } else {
                 print("email is not verified");
                 return VerificationView();
               }
-            }
-            else{
+            } else {
               print("snapshot does not have data");
               return SignUpView();
             }
-            
           } else if (snapshot.connectionState == ConnectionState.done) {
             print("state done!!!!!!!");
           }
-          return LogInView();
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         });
   }
 }

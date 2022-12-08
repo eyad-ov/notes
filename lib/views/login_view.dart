@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notes/services/exceptions.dart';
 import 'package:notes/services/firebase_auth_service.dart';
 import 'package:notes/views/show_error.dart';
+import 'package:notes/views/signup_view.dart';
 
 import '../data/notes_user.dart';
 
@@ -15,6 +16,7 @@ class LogInView extends StatefulWidget {
 class _LogInViewState extends State<LogInView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  int signinOrLogin = 2;
 
   @override
   void initState() {
@@ -30,102 +32,106 @@ class _LogInViewState extends State<LogInView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Log in"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, "signup", (route) => false);
-            },
-            child: const Text(
-              "Sign up",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
-        backgroundColor: Colors.red.shade300,
-      ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          TextField(
-            controller: _emailController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 3,
-                  color: Colors.red.shade100,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              hintText: "Email address",
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextField(
-            controller: _passwordController,
-            obscureText: true,
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 3,
-                  color: Colors.red.shade100,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              hintText: "Password",
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: TextButton(
-              onPressed: () async {
-                try {
-                  final email = _emailController.text;
-                  final password = _passwordController.text;
-                  if (email.isNotEmpty && password.isNotEmpty) {
-                    NotesUser notesUser = await FirebaseAuthService()
-                        .signInWithEmailAndPassword(
-                            email: email, password: password);
-                    /*Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-                    return const VerificationView();
-                  }), (route) => false);*/
-                    print(notesUser.email);
-                  }
-                } on WrongPasswordException {
-                  showErrorDialog("Wrong Password!", context);
-                } on UserNotFoundException {
-                  showErrorDialog(
-                      "There is no account associated with this email!",
-                      context);
-                } on InvalidEmailException {
-                  showErrorDialog("Invalid Email!", context);
-                } catch (e) {
-                  showErrorDialog(
-                      "Something wring happend. Please try again", context);
-                }
+    if (signinOrLogin == 1) {
+      return const SignUpView();
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Log in"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  signinOrLogin = 1;
+                });
+                //Navigator.pushNamedAndRemoveUntil(
+                //  context, "signup", (route) => false);
               },
-              child: Text(
-                "Log in",
+              child: const Text(
+                "Sign up",
                 style: TextStyle(
-                  color: Colors.red.shade300,
+                  color: Colors.white,
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+          backgroundColor: Colors.red.shade300,
+        ),
+        body: ListView(
+          children: [
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 3,
+                    color: Colors.red.shade100,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                hintText: "Email address",
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 3,
+                    color: Colors.red.shade100,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                hintText: "Password",
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: TextButton(
+                onPressed: () async {
+                  try {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    if (email.isNotEmpty && password.isNotEmpty) {
+                      NotesUser notesUser = await FirebaseAuthService()
+                          .signInWithEmailAndPassword(
+                              email: email, password: password);
+                      print(notesUser.email);
+                    }
+                  } on WrongPasswordException {
+                    showErrorDialog("Wrong Password!", context);
+                  } on UserNotFoundException {
+                    showErrorDialog(
+                        "There is no account associated with this email!",
+                        context);
+                  } on InvalidEmailException {
+                    showErrorDialog("Invalid Email!", context);
+                  } catch (e) {
+                    showErrorDialog(
+                        "Something wring happend. Please try again", context);
+                  }
+                },
+                child: Text(
+                  "Log in",
+                  style: TextStyle(
+                    color: Colors.red.shade300,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
   }
 }

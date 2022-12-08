@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/firebase_auth_service.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  final NotesUser notesUser;
+  const HomeView({super.key, required this.notesUser});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -30,8 +31,8 @@ class _HomeViewState extends State<HomeView> {
           )
         ],
       ),
-      body: const Center(
-        child: Text("welcome to home view"),
+      body: Center(
+        child: Text("welcome to home view ${widget.notesUser.email}"),
       ),
     );
   }
