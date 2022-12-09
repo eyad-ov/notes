@@ -51,7 +51,19 @@ class FirebaseAuthService {
     }
   }
 
-// password reser should be available!!!
+  Future<void> sendEmailToResetPassword({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        throw InvalidEmailException();
+      } else if (e.code == 'user-not-found') {
+        throw UserNotFoundException();
+      }
+    } catch (_) {
+      throw GeneralException();
+    }
+  }
 
   Stream<NotesUser?> trackUserAuthChanges() {
     return _firebaseAuth.userChanges().map((user) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/exceptions.dart';
 import 'package:notes/services/firebase_auth_service.dart';
+import 'package:notes/views/reset_password_view.dart';
 import 'package:notes/views/show_error.dart';
 import 'package:notes/views/signup_view.dart';
 
@@ -109,16 +110,16 @@ class _LogInViewState extends State<LogInView> {
                       print(notesUser.email);
                     }
                   } on WrongPasswordException {
-                    showErrorDialog("Wrong Password!", context);
+                    showMessage("Wrong Password!", context);
                   } on UserNotFoundException {
-                    showErrorDialog(
+                    showMessage(
                         "There is no account associated with this email!",
                         context);
                   } on InvalidEmailException {
-                    showErrorDialog("Invalid Email!", context);
+                    showMessage("Invalid Email!", context);
                   } catch (e) {
-                    showErrorDialog(
-                        "Something wring happend. Please try again", context);
+                    showMessage(
+                        "Something wrong happend. Please try again", context);
                   }
                 },
                 child: Text(
@@ -126,6 +127,16 @@ class _LogInViewState extends State<LogInView> {
                   style: TextStyle(
                     color: Colors.red.shade300,
                   ),
+                ),
+              ),
+            ),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                Navigator.pushNamed(context,'resetPassword');
+                },
+                child: const Text(
+                  "forgot your password?",
                 ),
               ),
             ),

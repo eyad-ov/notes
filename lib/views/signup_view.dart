@@ -105,16 +105,16 @@ class _SignUpViewState extends State<SignUpView> {
                               email: email, password: password);
                     }
                   } on WeakPasswordException {
-                    showErrorDialog("Weak Password!", context);
+                    showMessage("Weak Password!", context);
                   } on EmailIsAlreadyUsedException {
-                    showErrorDialog(
+                    showMessage(
                         "There is already an account with this email!",
                         context);
                   } on InvalidEmailException {
-                    showErrorDialog("Invalid Email!", context);
+                    showMessage("Invalid Email!", context);
                   } catch (e) {
-                    showErrorDialog(
-                        "Something wring happend. Please try again", context);
+                    showMessage(
+                        "Something wrong happend. Please try again", context);
                   }
                 },
                 child: Text(

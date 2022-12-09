@@ -30,7 +30,7 @@ class _VerificationViewState extends State<VerificationView> {
         ],
       ),
       body: Center(
-        child: Column(
+        child: ListView(
           children: [
             const Text(
                 "Click the button to send you an email for verification...\n after verfiying sign out and log in again"),

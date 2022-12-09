@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:notes/services/firebase_auth_service.dart';
 import 'package:notes/views/home_view.dart';
 import 'package:notes/views/login_view.dart';
+import 'package:notes/views/reset_password_view.dart';
 import 'package:notes/views/signup_view.dart';
 import 'package:notes/views/verification_view.dart';
 
@@ -19,6 +20,9 @@ void main() async {
       },
       'signup': (context) {
         return const SignUpView();
+      },
+      'resetPassword': (context) {
+        return const ResetPasswordView();
       },
     },
   ));
