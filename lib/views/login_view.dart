@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notes/services/exceptions.dart';
-import 'package:notes/services/firebase_auth_service.dart';
-import 'package:notes/views/reset_password_view.dart';
+import 'package:notes/services/authentication/exceptions.dart';
+import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/views/show_error.dart';
 import 'package:notes/views/signup_view.dart';
 

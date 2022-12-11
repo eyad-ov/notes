@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notes/services/firebase_auth_service.dart';
+import 'package:notes/services/authentication/firebase_auth_service.dart';
 
 class VerificationView extends StatefulWidget {
   const VerificationView({super.key});

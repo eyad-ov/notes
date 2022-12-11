@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notes/services/exceptions.dart';
-import 'package:notes/services/firebase_auth_service.dart';
+import 'package:notes/services/authentication/exceptions.dart';
+import 'package:notes/services/authentication/firebase_auth_service.dart';
+import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/login_view.dart';
 import 'package:notes/views/show_error.dart';
 
@@ -103,12 +104,13 @@ class _SignUpViewState extends State<SignUpView> {
                       NotesUser notesUser = await FirebaseAuthService()
                           .signUpWithEmailAndPassword(
                               email: email, password: password);
+
+                      await FirebaseDB().addNewUser(notesUser); 
                     }
                   } on WeakPasswordException {
                     showMessage("Weak Password!", context);
                   } on EmailIsAlreadyUsedException {
-                    showMessage(
-                        "There is already an account with this email!",
+                    showMessage("There is already an account with this email!",
                         context);
                   } on InvalidEmailException {
                     showMessage("Invalid Email!", context);

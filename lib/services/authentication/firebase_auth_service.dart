@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:notes/data/notes_user.dart';
-import 'package:notes/services/exceptions.dart';
+import 'package:notes/services/authentication/exceptions.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -22,6 +22,8 @@ class FirebaseAuthService {
     }
     throw GeneralException();
   }
+
+  NotesUser get user => NotesUser.fromFirebaseUser(_firebaseAuth.currentUser!);
 
   Future<NotesUser> signInWithEmailAndPassword(
       {required String email, required String password}) async {

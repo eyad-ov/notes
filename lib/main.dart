@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:notes/services/firebase_auth_service.dart';
+import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/views/home_view.dart';
 import 'package:notes/views/login_view.dart';
+import 'package:notes/views/new_note_view.dart';
 import 'package:notes/views/reset_password_view.dart';
 import 'package:notes/views/signup_view.dart';
 import 'package:notes/views/verification_view.dart';
@@ -24,6 +25,9 @@ void main() async {
       'resetPassword': (context) {
         return const ResetPasswordView();
       },
+      'newNote': (context) {
+        return const NewNoteVeiw(text: "");
+      },
     },
   ));
 }
@@ -37,25 +41,19 @@ class NotesApp extends StatelessWidget {
         stream: FirebaseAuthService().trackUserAuthChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            print("state waiting !!!!!");
           } else if (snapshot.connectionState == ConnectionState.active) {
-            print("state active!!!!");
             if (snapshot.hasData) {
-              print("snapshot has data!!!!!!");
-              print(snapshot.data!.email);
               if (snapshot.data!.isEmailVerified) {
-                print("email is verified");
-                return HomeView(notesUser: snapshot.data!,);
+                return HomeView(
+                  notesUser: snapshot.data!,
+                );
               } else {
-                print("email is not verified");
-                return VerificationView();
+                return const VerificationView();
               }
             } else {
-              print("snapshot does not have data");
-              return SignUpView();
+              return const SignUpView();
             }
           } else if (snapshot.connectionState == ConnectionState.done) {
-            print("state done!!!!!!!");
           }
           return const Center(
             child: CircularProgressIndicator(),
