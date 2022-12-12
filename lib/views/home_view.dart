@@ -42,28 +42,56 @@ class _HomeViewState extends State<HomeView> {
           }
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
+              List<UserNote> notes = snapshot.data!;
+              notes.sort((a, b) => b.dateTime.compareTo(a.dateTime));
               return ListView(
-                children: snapshot.data!.map((note) {
-
-                  /// show only two words of the text!!
-                  /// and try to sort the notes 
-                  return ListTile(
-                    title: Text(note.text),
-                    onTap: () async {
-                      String newText = await Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return NewNoteVeiw(text: note.text);
-                      })) as String;
-                      if(newText.isNotEmpty){
-                        await FirebaseDB().updateNote(note.id!, newText);
-                      }
-                    },
-                    trailing: IconButton(
-                      onPressed: () async {
-                        final noteId = note.id;
-                        FirebaseDB().deleteNote(noteId!);
+                children: notes.map((note) {
+                  String text = note.text;
+                  if (note.text.length > 20) {
+                    text = note.text.substring(0, 20);
+                    text += "...";
+                  }
+                  DateTime dateTime = note.dateTime;
+                  String minute = dateTime.minute.toString().length < 2
+                      ? "0${dateTime.minute}"
+                      : dateTime.minute.toString();
+                  String hour = dateTime.hour.toString().length < 2
+                      ? "0${dateTime.hour}"
+                      : dateTime.hour.toString();
+                  String day = dateTime.day.toString().length < 2
+                      ? "0${dateTime.day}"
+                      : dateTime.day.toString();
+                  String month = dateTime.month.toString().length < 2
+                      ? "0${dateTime.month}"
+                      : dateTime.month.toString();
+                  String year = dateTime.year.toString();
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Colors.red.shade300,
+                      ),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    color: Colors.grey.shade300,
+                    child: ListTile(
+                      title: Text(text),
+                      onTap: () async {
+                        String newText = await Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return NewNoteVeiw(text: note.text);
+                        })) as String;
+                        if (newText.isNotEmpty) {
+                          await FirebaseDB().updateNote(note.id!, newText);
+                        }
                       },
-                      icon: const Icon(Icons.delete),
+                      subtitle: Text("$hour:$minute  $day/$month/$year"),
+                      trailing: IconButton(
+                        onPressed: () async {
+                          final noteId = note.id;
+                          FirebaseDB().deleteNote(noteId!);
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
                     ),
                   );
                 }).toList(),
@@ -84,6 +112,7 @@ class _HomeViewState extends State<HomeView> {
               userId: user.id,
               userEmail: user.email,
               text: text,
+              dateTime: DateTime.now(),
             );
             await FirebaseDB().addNote(note);
           }
