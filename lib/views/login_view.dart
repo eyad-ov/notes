@@ -106,7 +106,6 @@ class _LogInViewState extends State<LogInView> {
                       NotesUser notesUser = await FirebaseAuthService()
                           .signInWithEmailAndPassword(
                               email: email, password: password);
-                      print(notesUser.email);
                     }
                   } on WrongPasswordException {
                     showMessage("Wrong Password!", context);

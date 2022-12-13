@@ -3,6 +3,7 @@ import 'package:notes/data/notes_user.dart';
 import 'package:notes/data/user_note.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
+import 'package:notes/views/alert_dialog.dart';
 import 'package:notes/views/new_note_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -21,17 +22,27 @@ class _HomeViewState extends State<HomeView> {
         title: const Text("Home"),
         backgroundColor: Colors.red.shade300,
         actions: [
-          TextButton(
-            onPressed: () async {
-              await FirebaseAuthService().signOut();
-            },
-            child: const Text(
-              "Sign out",
-              style: TextStyle(
-                color: Colors.white,
+          Row(children: [
+            TextButton(
+              onPressed: () async {
+                bool sure = await showAlertDialog(context);
+                sure == true ? await FirebaseAuthService().signOut() : null;
+              },
+              child: const Text(
+                "Sign out",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
-          )
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, 'settings');
+                },
+                icon: const Icon(
+                  Icons.settings,
+                )),
+          ])
         ],
       ),
       body: StreamBuilder(

@@ -53,6 +53,21 @@ class FirebaseAuthService {
     }
   }
 
+  Future<void> deleteUser() async {
+    if (_firebaseAuth.currentUser != null) {
+      try{
+        await _firebaseAuth.currentUser!.delete();
+      }on FirebaseAuthException catch(e){
+        if(e.code == 'requires-recent-login'){
+          throw RequiersRecentLogInException();
+        }
+      }
+      catch(_){
+        throw GeneralException();
+      }
+    }
+  }
+
   Future<void> sendEmailToResetPassword({required String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);

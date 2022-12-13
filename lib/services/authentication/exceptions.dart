@@ -4,3 +4,4 @@ class InvalidEmailException implements Exception{}
 class GeneralException implements Exception{}
 class WrongPasswordException implements Exception{}
 class UserNotFoundException implements Exception{}
+class RequiersRecentLogInException implements Exception{}

@@ -5,6 +5,7 @@ import 'package:notes/views/home_view.dart';
 import 'package:notes/views/login_view.dart';
 import 'package:notes/views/new_note_view.dart';
 import 'package:notes/views/reset_password_view.dart';
+import 'package:notes/views/settings_view.dart';
 import 'package:notes/views/signup_view.dart';
 import 'package:notes/views/verification_view.dart';
 
@@ -27,6 +28,9 @@ void main() async {
       },
       'newNote': (context) {
         return const NewNoteVeiw(text: "");
+      },
+      'settings': (context) {
+        return const SettingsView();
       },
     },
   ));
