@@ -57,8 +57,7 @@ class NotesApp extends StatelessWidget {
             } else {
               return const SignUpView();
             }
-          } else if (snapshot.connectionState == ConnectionState.done) {
-          }
+          } else if (snapshot.connectionState == ConnectionState.done) {}
           return const Center(
             child: CircularProgressIndicator(),
           );

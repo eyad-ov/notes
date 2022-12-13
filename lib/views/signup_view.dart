@@ -42,8 +42,6 @@ class _SignUpViewState extends State<SignUpView> {
                 setState(() {
                   signinOrLogin = 2;
                 });
-                //Navigator.pushNamedAndRemoveUntil(
-                //  context, "login", (route) => false);
               },
               child: const Text(
                 "log in",
@@ -105,7 +103,7 @@ class _SignUpViewState extends State<SignUpView> {
                           .signUpWithEmailAndPassword(
                               email: email, password: password);
 
-                      await FirebaseDB().addNewUser(notesUser); 
+                      await FirebaseDB().addNewUser(notesUser);
                     }
                   } on WeakPasswordException {
                     showMessage("Weak Password!", context);

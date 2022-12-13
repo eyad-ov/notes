@@ -1,4 +1,3 @@
-// user should be able to delete his account
 
 import 'package:firebase_auth/firebase_auth.dart';
 

@@ -19,13 +19,13 @@ class SettingsView extends StatelessWidget {
           TextButton(
             onPressed: () async {
               try {
-                bool sure = await showAlertDialog(context);
+                final navigator = Navigator.of(context);
+                bool sure = await showAlertDialog(context,"delete your accout");
                 if (sure) {
                   await FirebaseDB()
                       .deleteAllNotesOfUser(FirebaseAuthService().user);
                   await FirebaseAuthService().deleteUser();
-                  // not working
-                  //Navigator.pop(context);
+                  navigator.pop();
                 }
               } on RequiersRecentLogInException {
                 showMessage("log in and try it again", context);

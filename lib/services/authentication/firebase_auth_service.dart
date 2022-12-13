@@ -3,7 +3,12 @@ import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/exceptions.dart';
 
 class FirebaseAuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+  // not sure if it worked
+  FirebaseAuthService(){
+    _firebaseAuth.setPersistence(Persistence.LOCAL);
+  }
+  static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   Future<NotesUser> signUpWithEmailAndPassword(
       {required String email, required String password}) async {

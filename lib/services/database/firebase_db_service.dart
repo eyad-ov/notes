@@ -15,8 +15,7 @@ class FirebaseDB {
   final StreamController<List<UserNote>> _noteStreamController =
       StreamController.broadcast();
 
-// it is not really neccesary to have users table, since we already have it in authentication
-  Future<void> addNewUser(NotesUser user) async {
+    Future<void> addNewUser(NotesUser user) async {
     await _firestore
         .collection('users')
         .doc(user.id)

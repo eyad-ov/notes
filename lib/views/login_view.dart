@@ -4,7 +4,6 @@ import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/views/show_error.dart';
 import 'package:notes/views/signup_view.dart';
 
-import '../data/notes_user.dart';
 
 class LogInView extends StatefulWidget {
   const LogInView({super.key});
@@ -32,6 +31,8 @@ class _LogInViewState extends State<LogInView> {
 
   @override
   Widget build(BuildContext context) {
+  //log in should last until user signs out
+
     if (signinOrLogin == 1) {
       return const SignUpView();
     } else {
@@ -44,8 +45,6 @@ class _LogInViewState extends State<LogInView> {
                 setState(() {
                   signinOrLogin = 1;
                 });
-                //Navigator.pushNamedAndRemoveUntil(
-                //  context, "signup", (route) => false);
               },
               child: const Text(
                 "Sign up",
@@ -103,9 +102,8 @@ class _LogInViewState extends State<LogInView> {
                     final email = _emailController.text;
                     final password = _passwordController.text;
                     if (email.isNotEmpty && password.isNotEmpty) {
-                      NotesUser notesUser = await FirebaseAuthService()
-                          .signInWithEmailAndPassword(
-                              email: email, password: password);
+                      await FirebaseAuthService().signInWithEmailAndPassword(
+                          email: email, password: password);
                     }
                   } on WrongPasswordException {
                     showMessage("Wrong Password!", context);
@@ -131,7 +129,7 @@ class _LogInViewState extends State<LogInView> {
             Center(
               child: TextButton(
                 onPressed: () {
-                Navigator.pushNamed(context,'resetPassword');
+                  Navigator.pushNamed(context, 'resetPassword');
                 },
                 child: const Text(
                   "forgot your password?",

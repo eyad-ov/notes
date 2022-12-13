@@ -4,6 +4,7 @@ import 'package:notes/data/user_note.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/alert_dialog.dart';
+import 'package:notes/views/constans.dart';
 import 'package:notes/views/new_note_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -15,46 +16,98 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final TextEditingController _searchController = TextEditingController();
+  bool searched = false;
+
+  @override
+  void initState() {
+    _searchController.addListener(() {
+      setState(() {
+        if (_searchController.text.isNotEmpty) {
+          searched = true;
+        } else {
+          FocusScope.of(context).unfocus();
+        }
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: homeBackgroundColor,
       appBar: AppBar(
-        title: const Text("Home"),
-        backgroundColor: Colors.red.shade300,
-        actions: [
-          Row(children: [
-            TextButton(
-              onPressed: () async {
-                bool sure = await showAlertDialog(context);
-                sure == true ? await FirebaseAuthService().signOut() : null;
-              },
-              child: const Text(
-                "Sign out",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+        title: Container(
+          decoration: BoxDecoration(
+            color: Colors.red.shade200,
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: TextField(
+            cursorColor: Colors.white,
+            controller: _searchController,
+            decoration: const InputDecoration(
+              hintText: 'Search notes',
+              suffixIcon: Icon(
+                Icons.search,
+                color: Colors.white,
               ),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.all(20),
             ),
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, 'settings');
-                },
-                icon: const Icon(
-                  Icons.settings,
-                )),
-          ])
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: appBarBackgroundColor,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, 'settings');
+          },
+          icon: const Icon(
+            Icons.settings,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              bool sure = await showAlertDialog(context, "sign out");
+              sure == true ? await FirebaseAuthService().signOut() : null;
+            },
+            icon: const Icon(Icons.logout),
+          ),
         ],
       ),
       body: StreamBuilder(
         stream: FirebaseDB().userNoteStream(FirebaseAuthService().user),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return Center(
+              child: Column(
+                children: const [
+                  Text(
+                    "Something wrong happend, make sure you have internet connection",
+                  ),
+                  CircularProgressIndicator(),
+                ],
+              ),
+            );
           }
           if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
               List<UserNote> notes = snapshot.data!;
               notes.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+              if (searched) {
+                String word = _searchController.text;
+                notes = notes.where((note) {
+                  return note.text.contains(word);
+                }).toList();
+              }
               return ListView(
                 children: notes.map((note) {
                   String text = note.text;
@@ -78,12 +131,12 @@ class _HomeViewState extends State<HomeView> {
                   String year = dateTime.year.toString();
                   return Card(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Colors.red.shade300,
+                      side: const BorderSide(
+                        color: noteBorderColor,
                       ),
                       borderRadius: BorderRadius.circular(15.0),
                     ),
-                    color: Colors.grey.shade300,
+                    color: noteColor,
                     child: ListTile(
                       title: Text(text),
                       onTap: () async {
@@ -98,10 +151,17 @@ class _HomeViewState extends State<HomeView> {
                       subtitle: Text("$hour:$minute  $day/$month/$year"),
                       trailing: IconButton(
                         onPressed: () async {
-                          final noteId = note.id;
-                          FirebaseDB().deleteNote(noteId!);
+                          final sure = await showAlertDialog(
+                              context, "delete this note");
+                          if (sure) {
+                            final noteId = note.id;
+                            FirebaseDB().deleteNote(noteId!);
+                          }
                         },
-                        icon: const Icon(Icons.delete),
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   );
@@ -128,7 +188,11 @@ class _HomeViewState extends State<HomeView> {
             await FirebaseDB().addNote(note);
           }
         },
-        child: const Icon(Icons.add),
+        backgroundColor: Colors.red.shade300,
+        child: Icon(
+          Icons.edit,
+          color: Colors.grey.shade300,
+        ),
       ),
     );
   }

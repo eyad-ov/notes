@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-Future<bool> showAlertDialog(BuildContext context) async {
+Future<bool> showAlertDialog(BuildContext context, String action) async {
   return await showDialog<bool?>(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text("Are you sure, you want to sign out"),
+              title: Text("Are you sure, you want to $action"),
               content: Row(
                 children: [
                   TextButton(
@@ -18,7 +18,7 @@ Future<bool> showAlertDialog(BuildContext context) async {
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                    child: const Text("no"),
+                    child: const Text("cancel"),
                   ),
                 ],
               ),
