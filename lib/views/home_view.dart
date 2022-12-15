@@ -8,6 +8,7 @@ import 'package:notes/views/alert_dialog.dart';
 import 'package:notes/views/constans.dart';
 import 'package:notes/views/new_note_view.dart';
 import 'package:notes/views/show_error.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HomeView extends StatefulWidget {
   final NotesUser notesUser;
@@ -134,18 +135,29 @@ class _HomeViewState extends State<HomeView> {
                           }
                         },
                         subtitle: Text("$hour:$minute  $day/$month/$year"),
-                        trailing: IconButton(
-                          onPressed: () async {
-                            final sure = await showAlertDialog(
-                                context, "delete this note");
-                            if (sure) {
-                              final noteId = note.id;
-                              FirebaseDB().deleteNote(noteId!);
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                          ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Share.share(note.text);
+                              },
+                              icon: const Icon(Icons.share),
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                final sure = await showAlertDialog(
+                                    context, "delete this note");
+                                if (sure) {
+                                  final noteId = note.id;
+                                  FirebaseDB().deleteNote(noteId!);
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
