@@ -15,7 +15,7 @@ class FirebaseDB {
   final StreamController<List<UserNote>> _noteStreamController =
       StreamController.broadcast();
 
-    Future<void> addNewUser(NotesUser user) async {
+  Future<void> addNewUser(NotesUser user) async {
     await _firestore
         .collection('users')
         .doc(user.id)
@@ -54,6 +54,12 @@ class FirebaseDB {
     });
   }
 
+  Future<void> updateFavoriteNote(String noteId, bool favorite) async {
+    await _firestore.collection('notes').doc(noteId).update({
+      'favorite': favorite,
+    });
+  }
+
   Future<void> addNote(UserNote note) async {
     note.text = AESEncryption.encrypt(note.text);
     await _firestore.collection('notes').add({
@@ -61,6 +67,7 @@ class FirebaseDB {
       'user_email': note.userEmail,
       'text': note.text,
       'date': DateTime.now(),
+      'favorite': false,
     });
   }
 
@@ -82,12 +89,14 @@ class FirebaseDB {
         text = AESEncryption.decrypt(text);
         final dateTime =
             (queryDocumentSnapshot.data()['date'] as Timestamp).toDate();
+        final favorite = queryDocumentSnapshot.data()['favorite'] as bool;
         return UserNote(
             id: id,
             userId: userId,
             userEmail: userEmail,
             text: text,
-            dateTime: dateTime);
+            dateTime: dateTime,
+            favorite: favorite);
       }).toList();
       _noteStreamController.add(notes);
     });

@@ -87,7 +87,16 @@ class _HomeViewState extends State<HomeView> {
             if (snapshot.connectionState == ConnectionState.active) {
               if (snapshot.hasData) {
                 List<UserNote> notes = snapshot.data!;
-                notes.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+                List<UserNote> favoriteNotes =
+                    notes.where((note) => note.favorite).toList();
+                List<UserNote> notFavoriteNotes =
+                    notes.where((note) => !note.favorite).toList();
+                favoriteNotes.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+                notFavoriteNotes
+                    .sort((a, b) => b.dateTime.compareTo(a.dateTime));
+                notes.clear();
+                notes.addAll(favoriteNotes);
+                notes.addAll(notFavoriteNotes);
                 if (searched) {
                   String word = _searchController.text;
                   notes = notes.where((note) {
@@ -124,6 +133,16 @@ class _HomeViewState extends State<HomeView> {
                       ),
                       color: noteColor,
                       child: ListTile(
+                        leading: IconButton(
+                          onPressed: () async {
+                            await FirebaseDB()
+                                .updateFavoriteNote(note.id!, !note.favorite);
+                          },
+                          icon: Icon(
+                            Icons.star,
+                            color: note.favorite ? Colors.red : Colors.grey,
+                          ),
+                        ),
                         title: Text(text),
                         onTap: () async {
                           String newText = await Navigator.push(context,
@@ -181,6 +200,7 @@ class _HomeViewState extends State<HomeView> {
                 userEmail: user.email,
                 text: text,
                 dateTime: DateTime.now(),
+                favorite: false,
               );
               await FirebaseDB().addNote(note);
             }
