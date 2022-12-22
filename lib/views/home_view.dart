@@ -7,12 +7,13 @@ import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/alert_dialog.dart';
 import 'package:notes/views/constans.dart';
 import 'package:notes/views/new_note_view.dart';
-import 'package:notes/views/show_error.dart';
+import 'package:notes/views/show_message.dart';
 import 'package:share_plus/share_plus.dart';
 
 class HomeView extends StatefulWidget {
   final NotesUser notesUser;
-  const HomeView({super.key, required this.notesUser});
+  final bool darkMode;
+  const HomeView({super.key, required this.notesUser, required this.darkMode});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -45,11 +46,13 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: homeBackgroundColor,
+        backgroundColor:
+            widget.darkMode ? darkModeHomeBackgroundColor : homeBackgroundColor,
         appBar: AppBar(
           title: Container(
             decoration: BoxDecoration(
-              color: Colors.red.shade200,
+              color:
+                  widget.darkMode ? darkModeSearchFieldColor : searchFieldColor,
               borderRadius: BorderRadius.circular(32),
             ),
             child: TextField(
@@ -59,7 +62,7 @@ class _HomeViewState extends State<HomeView> {
                 hintText: 'Search notes',
                 suffixIcon: Icon(
                   Icons.search,
-                  color: Colors.white,
+                  color: iconColor,
                 ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(20),
@@ -67,7 +70,9 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           centerTitle: true,
-          backgroundColor: appBarBackgroundColor,
+          backgroundColor: widget.darkMode
+              ? darkModeAppBarBackgroundColor
+              : appBarBackgroundColor,
         ),
         body: StreamBuilder(
           stream: FirebaseDB().userNoteStream(FirebaseAuthService().user),
@@ -131,26 +136,33 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         borderRadius: BorderRadius.circular(15.0),
                       ),
-                      color: noteColor,
+                      color: widget.darkMode ? darkModeNoteColor : noteColor,
                       child: ListTile(
                         leading: IconButton(
                           onPressed: () async {
                             await FirebaseDB()
-                                .updateFavoriteNote(note.id!, !note.favorite);
+                                .updateNote(note.id!, favorite: !note.favorite);
                           },
                           icon: Icon(
                             Icons.star,
                             color: note.favorite ? Colors.red : Colors.grey,
                           ),
                         ),
-                        title: Text(text),
+                        title: Text(
+                          text,
+                          style: TextStyle(
+                            color:
+                                widget.darkMode ? darkModeTextColor : textColor,
+                          ),
+                        ),
                         onTap: () async {
                           String newText = await Navigator.push(context,
                               MaterialPageRoute(builder: (context) {
                             return NewNoteVeiw(text: note.text);
                           })) as String;
                           if (newText.isNotEmpty) {
-                            await FirebaseDB().updateNote(note.id!, newText);
+                            await FirebaseDB()
+                                .updateNote(note.id!, newText: newText);
                           }
                         },
                         subtitle: Text("$hour:$minute  $day/$month/$year"),
@@ -172,8 +184,11 @@ class _HomeViewState extends State<HomeView> {
                                   FirebaseDB().deleteNote(noteId!);
                                 }
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.delete,
+                                color: widget.darkMode
+                                    ? darkModeIconColor
+                                    : iconColor,
                               ),
                             ),
                           ],
@@ -185,7 +200,7 @@ class _HomeViewState extends State<HomeView> {
               }
               return const Center(child: Text("no notes yet!"));
             }
-            return const Text("home");
+            return const CircularProgressIndicator();
           },
         ),
         floatingActionButton: FloatingActionButton(
@@ -205,10 +220,12 @@ class _HomeViewState extends State<HomeView> {
               await FirebaseDB().addNote(note);
             }
           },
-          backgroundColor: Colors.red.shade300,
+          backgroundColor: widget.darkMode
+              ? darkModeFloatingActionButtonBackgroundColor
+              : floatingActionButtonBackgroundColor,
           child: Icon(
             Icons.edit,
-            color: Colors.grey.shade300,
+            color: widget.darkMode ? darkModeIconColor : iconColor,
           ),
         ),
         drawer: MyDrawer(

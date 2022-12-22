@@ -1,6 +1,8 @@
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
+import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/home_view.dart';
 import 'package:notes/views/login_view.dart';
 import 'package:notes/views/new_note_view.dart';
@@ -48,9 +50,20 @@ class NotesApp extends StatelessWidget {
           } else if (snapshot.connectionState == ConnectionState.active) {
             if (snapshot.hasData) {
               if (snapshot.data!.isEmailVerified) {
-                return HomeView(
-                  notesUser: snapshot.data!,
-                );
+                final user = snapshot.data!;
+                return StreamBuilder(
+                    stream: FirebaseDB().userStream(user),
+                    builder: ((context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.active) {
+                        if (snapshot.hasData) {
+                          return HomeView(
+                            notesUser: user,
+                            darkMode: snapshot.data!.darkMode,
+                          );
+                        }
+                      }
+                      return const CircularProgressIndicator();
+                    }));
               } else {
                 return const VerificationView();
               }

@@ -1,39 +1,77 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:notes/services/authentication/exceptions.dart';
-import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
-import 'package:notes/views/alert_dialog.dart';
-import 'package:notes/views/show_error.dart';
+import 'package:notes/views/change_email.dart';
+import 'package:notes/views/change_password.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
 
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
       ),
-      body: ListView(
-        children: [
-          TextButton(
-            onPressed: () async {
-              try {
-                final navigator = Navigator.of(context);
-                bool sure = await showAlertDialog(context,"delete your accout");
-                if (sure) {
-                  await FirebaseDB()
-                      .deleteAllNotesOfUser(FirebaseAuthService().user);
-                  await FirebaseAuthService().deleteUser();
-                  navigator.pop();
-                }
-              } on RequiersRecentLogInException {
-                showMessage("log in and try it again", context);
-              }
-            },
-            child: const Text("delete account"),
-          ),
-        ],
+      body: FutureBuilder(
+        future: FirebaseDB().user,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final user = snapshot.data!;
+            return ListView(
+              children: [
+                ListTile(
+                  title: const Text("Dark mode"),
+                  trailing: Checkbox(
+                    value: user.darkMode,
+                    onChanged: (value) async {
+                      await FirebaseDB()
+                          .updateUser(user.id, darkMode: value ?? false);
+                      setState(() {
+                        user.darkMode = value ?? false;
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: const Text("change email"),
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        // false !!!
+                        // cursor problem too!
+                        return const ChangeEmailView(darkMode: false);
+                      }),
+                      (route) => false,
+                    );
+                  },
+                  trailing: const Icon(Icons.change_circle),
+                ),
+                ListTile(
+                  title: const Text("change password"),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        // false !!!
+                        // cursor problem too!
+                        return const ChangePasswordView(darkMode: false);
+                      }),
+                    );
+                  },
+                  trailing: const Icon(Icons.password),
+                ),
+              ],
+            );
+          }
+          return const CircularProgressIndicator();
+        },
       ),
     );
   }

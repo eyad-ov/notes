@@ -3,7 +3,7 @@ import 'package:notes/services/authentication/exceptions.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/login_view.dart';
-import 'package:notes/views/show_error.dart';
+import 'package:notes/views/show_message.dart';
 
 import '../data/notes_user.dart';
 
