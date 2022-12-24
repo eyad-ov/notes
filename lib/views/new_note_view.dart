@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class NewNoteVeiw extends StatefulWidget {
   final String text;
-  const NewNoteVeiw({super.key, required this.text});
+  final bool darkMode;
+  const NewNoteVeiw({super.key, required this.text, required this.darkMode});
 
   @override
   State<NewNoteVeiw> createState() => _NewNoteVeiwState();

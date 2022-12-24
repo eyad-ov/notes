@@ -1,11 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
-import 'package:notes/views/change_email.dart';
-import 'package:notes/views/change_password.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({super.key});
+  final bool darkMode;
+  const SettingsView({super.key, required this.darkMode});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();
@@ -41,29 +39,22 @@ class _SettingsViewState extends State<SettingsView> {
                 ListTile(
                   title: const Text("change email"),
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        // false !!!
-                        // cursor problem too!
-                        return const ChangeEmailView(darkMode: false);
-                      }),
-                      (route) => false,
-                    );
+                    Navigator.pushNamed(
+                        context,
+                        widget.darkMode
+                            ? "changeEmailDarkMode"
+                            : "changeEmail");
                   },
                   trailing: const Icon(Icons.change_circle),
                 ),
                 ListTile(
                   title: const Text("change password"),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        // false !!!
-                        // cursor problem too!
-                        return const ChangePasswordView(darkMode: false);
-                      }),
-                    );
+                    Navigator.pushNamed(
+                        context,
+                        widget.darkMode
+                            ? "changePasswordDarkMode"
+                            : "changePassword");
                   },
                   trailing: const Icon(Icons.password),
                 ),

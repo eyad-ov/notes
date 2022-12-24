@@ -22,64 +22,69 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Reset password"),
-        backgroundColor: Colors.red.shade300,
-      ),
-      body: Center(
-        child: ListView(
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            const Center(
-                child: Text(
-                    "you can reset your password with the following email.")),
-            const SizedBox(
-              height: 10,
-            ),
-            TextField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    width: 3,
-                    color: Colors.red.shade100,
+    return GestureDetector(
+      onTap: () {
+         FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Reset password"),
+          backgroundColor: Colors.red.shade300,
+        ),
+        body: Center(
+          child: ListView(
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              const Center(
+                  child: Text(
+                      "you can reset your password with the following email.")),
+              const SizedBox(
+                height: 10,
+              ),
+              TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 3,
+                      color: Colors.red.shade100,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  hintText: "Email address",
                 ),
-                hintText: "Email address",
               ),
-            ),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.email),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade300,
-              ),
-              onPressed: () async {
-                try {
-                  final email = _emailController.text;
-                  if (email.isNotEmpty) {
-                    await FirebaseAuthService()
-                        .sendEmailToResetPassword(email: email)
-                        .then((value) {
-                      showSnackbar("email has been sent succesfully");
-                    });
+              ElevatedButton.icon(
+                icon: const Icon(Icons.email),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade300,
+                ),
+                onPressed: () async {
+                  try {
+                    final email = _emailController.text;
+                    if (email.isNotEmpty) {
+                      await FirebaseAuthService()
+                          .sendEmailToResetPassword(email: email)
+                          .then((value) {
+                        showSnackbar("email has been sent succesfully");
+                      });
+                    }
+                  } on InvalidEmailException {
+                    showMessage("Invalid Email!", context);
+                  } on UserNotFoundException {
+                    showMessage("There is no account associated with this email!",
+                        context);
+                  }catch(_){
+                    showMessage("Something wrong happend. Please try again", context);
                   }
-                } on InvalidEmailException {
-                  showMessage("Invalid Email!", context);
-                } on UserNotFoundException {
-                  showMessage("There is no account associated with this email!",
-                      context);
-                }catch(_){
-                  showMessage("Something wrong happend. Please try again", context);
-                }
-              },
-              label: const Text("send an email"),
-            ),
-          ],
+                },
+                label: const Text("send an email"),
+              ),
+            ],
+          ),
         ),
       ),
     );

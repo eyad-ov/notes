@@ -5,8 +5,7 @@ import 'package:notes/services/authentication/exceptions.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/alert_dialog.dart';
-import 'package:notes/views/constans.dart';
-import 'package:notes/views/new_note_view.dart';
+import 'package:notes/constants/constans.dart';
 import 'package:notes/views/show_message.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -29,8 +28,6 @@ class _HomeViewState extends State<HomeView> {
       setState(() {
         if (_searchController.text.isNotEmpty) {
           searched = true;
-        } else {
-          FocusScope.of(context).unfocus();
         }
       });
     });
@@ -156,10 +153,11 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                         onTap: () async {
-                          String newText = await Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return NewNoteVeiw(text: note.text);
-                          })) as String;
+                          String newText = await Navigator.pushNamed(
+                              context,
+                              widget.darkMode
+                                  ? "newNoteDarkMode"
+                                  : "newNote") as String;
                           if (newText.isNotEmpty) {
                             await FirebaseDB()
                                 .updateNote(note.id!, newText: newText);
@@ -200,7 +198,9 @@ class _HomeViewState extends State<HomeView> {
               }
               return const Center(child: Text("no notes yet!"));
             }
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           },
         ),
         floatingActionButton: FloatingActionButton(
@@ -230,13 +230,15 @@ class _HomeViewState extends State<HomeView> {
         ),
         drawer: MyDrawer(
           user: widget.notesUser,
+          darkMode: widget.darkMode,
         ));
   }
 }
 
 class MyDrawer extends StatelessWidget {
+  final bool darkMode;
   final NotesUser user;
-  const MyDrawer({super.key, required this.user});
+  const MyDrawer({super.key, required this.user, required this.darkMode});
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +267,8 @@ class MyDrawer extends StatelessWidget {
               title: const Text("settings"),
               trailing: const Icon(Icons.settings),
               onTap: () {
-                Navigator.pushNamed(context, 'settings');
+                Navigator.pushNamed(
+                    context, darkMode ? "settingsDarkMode" : "settings");
               },
             ),
           ),
