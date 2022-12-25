@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/views/change_email_view.dart';
+import 'package:notes/views/change_font_view.dart';
 import 'package:notes/views/change_password_view.dart';
 import 'package:notes/views/home_view.dart';
 import 'package:notes/views/login_view.dart';
@@ -11,6 +13,7 @@ import 'package:notes/views/reset_password_view.dart';
 import 'package:notes/views/settings_view.dart';
 import 'package:notes/views/signup_view.dart';
 import 'package:notes/views/verification_view.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,44 +35,19 @@ void main() async {
       'newNote': (context) {
         return const NewNoteVeiw(
           text: "",
-          darkMode: false,
-        );
-      },
-      'newNoteDarkMode': (context) {
-        return const NewNoteVeiw(
-          text: "",
-          darkMode: true,
         );
       },
       'settings': (context) {
-        return const SettingsView(
-          darkMode: false,
-        );
-      },
-      'settingsDarkMode': (context) {
-        return const SettingsView(
-          darkMode: true,
-        );
+        return const SettingsView();
       },
       'changeEmail': (context) {
-        return const ChangeEmailView(
-          darkMode: false,
-        );
-      },
-      'changeEmailDarkMode': (context) {
-        return const ChangeEmailView(
-          darkMode: true,
-        );
+        return const ChangeEmailView();
       },
       'changePassword': (context) {
-        return const ChangePasswordView(
-          darkMode: false,
-        );
+        return const ChangePasswordView();
       },
-      'changePasswordDarkMode': (context) {
-        return const ChangePasswordView(
-          darkMode: true,
-        );
+      'changeFont': (context) {
+        return const ChangeFontView();
       },
     },
   ));
@@ -92,22 +70,19 @@ class NotesApp extends StatelessWidget {
               if (snapshot.hasData) {
                 if (snapshot.data!.isEmailVerified) {
                   final user = snapshot.data!;
-                  return StreamBuilder(
-                      stream: FirebaseDB().userStream(user),
-                      builder: ((context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.active) {
-                          if (snapshot.hasData) {
-                            return HomeView(
-                              notesUser: user,
-                              darkMode: snapshot.data!.darkMode,
-                            );
-                          }
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                  return StreamProvider(
+                    create: ((context) {
+                      return FirebaseDB().userStream(user);
+                    }),
+                    initialData: user,
+                    child: Consumer<NotesUser>(
+                      builder: (context, noteUser, child) {
+                        return HomeView(
+                          notesUser: noteUser,
                         );
-                      }));
+                      },
+                    ),
+                  );
                 } else {
                   return const VerificationView();
                 }

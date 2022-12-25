@@ -25,12 +25,13 @@ class FirebaseDB {
     final doc = await docRef.get();
     final email = doc.data()!['email'] as String;
     final darkMode = doc.data()!['dark_mode'] as bool;
+    final font = doc.data()!['font'] as String;
     return NotesUser(
-      id: id,
-      email: email,
-      isEmailVerified: true,
-      darkMode: darkMode,
-    );
+        id: id,
+        email: email,
+        isEmailVerified: true,
+        darkMode: darkMode,
+        font: font);
   }
 
   Future<void> addNewUser(NotesUser user) async {
@@ -41,7 +42,7 @@ class FirebaseDB {
   }
 
   Future<void> updateUser(String userId,
-      {bool? darkMode, String? email}) async {
+      {bool? darkMode, String? email, String? font}) async {
     if (darkMode != null) {
       await _firestore
           .collection('users')
@@ -50,6 +51,9 @@ class FirebaseDB {
     }
     if (email != null) {
       await _firestore.collection('users').doc(userId).update({'email': email});
+    }
+    if(font != null){
+      await _firestore.collection('users').doc(userId).update({'font': font});
     }
   }
 
@@ -114,17 +118,19 @@ class FirebaseDB {
     return _firestore.collection('users').doc(user.id).snapshots();
   }
 
+
   Stream<NotesUser> userStream(NotesUser user) {
     _usersQuerySnapShotStream(user).listen((documentSnapshot) {
       String id = documentSnapshot.id;
       String email = documentSnapshot.data()!['email'];
       bool darkMode = documentSnapshot.data()!['dark_mode'];
+      String font = documentSnapshot.data()!['font'];
       final user = NotesUser(
-        id: id,
-        email: email,
-        isEmailVerified: true,
-        darkMode: darkMode,
-      );
+          id: id,
+          email: email,
+          isEmailVerified: true,
+          darkMode: darkMode,
+          font: font);
       _userStreamController.add(user);
     });
 

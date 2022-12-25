@@ -5,12 +5,14 @@ class NotesUser {
   final String email;
   final bool isEmailVerified;
   bool darkMode;
+  String font;
 
   NotesUser(
       {required this.id,
       required this.email,
       required this.isEmailVerified,
-      required this.darkMode});
+      required this.darkMode,
+      required this.font});
 
   factory NotesUser.fromFirebaseUser(User firebaseUser) {
     return NotesUser(
@@ -18,6 +20,7 @@ class NotesUser {
       email: firebaseUser.email!,
       isEmailVerified: firebaseUser.emailVerified,
       darkMode: false,
+      font: "openSans"
     );
   }
 }
