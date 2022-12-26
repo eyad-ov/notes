@@ -3,7 +3,7 @@ import 'package:notes/constants/constans.dart';
 import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
-import 'package:notes/services/font_family.dart';
+import 'package:notes/services/text_style.dart';
 import 'package:provider/provider.dart';
 
 class NewNoteVeiw extends StatefulWidget {
@@ -44,10 +44,7 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
             body: Padding(
               padding: const EdgeInsets.all(10),
               child: TextField(
-                style: TextStyle(
-                  color: user.darkMode ? darkModeTextColor : textColor,
-                  fontFamily: getFontFamily(user.font),
-                ),
+                style: getTextStyle(user.font, user.darkMode),
                 controller: _noteController,
                 maxLines: null,
               ),

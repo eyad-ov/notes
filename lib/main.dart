@@ -18,38 +18,43 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // what if it failed!?
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    theme: ThemeData(),
-    home: const NotesApp(),
-    routes: {
-      'login': (context) {
-        return const LogInView();
-      },
-      'signup': (context) {
-        return const SignUpView();
-      },
-      'resetPassword': (context) {
-        return const ResetPasswordView();
-      },
-      'newNote': (context) {
-        return const NewNoteVeiw(
-          text: "",
-        );
-      },
-      'settings': (context) {
-        return const SettingsView();
-      },
-      'changeEmail': (context) {
-        return const ChangeEmailView();
-      },
-      'changePassword': (context) {
-        return const ChangePasswordView();
-      },
-      'changeFont': (context) {
-        return const ChangeFontView();
-      },
+  runApp(GestureDetector(
+    onTap: () {
+      FocusManager.instance.primaryFocus?.unfocus();
     },
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(),
+      home: const NotesApp(),
+      routes: {
+        'login': (context) {
+          return const LogInView();
+        },
+        'signup': (context) {
+          return const SignUpView();
+        },
+        'resetPassword': (context) {
+          return const ResetPasswordView();
+        },
+        'newNote': (context) {
+          return const NewNoteVeiw(
+            text: "",
+          );
+        },
+        'settings': (context) {
+          return const SettingsView();
+        },
+        'changeEmail': (context) {
+          return const ChangeEmailView();
+        },
+        'changePassword': (context) {
+          return const ChangePasswordView();
+        },
+        'changeFont': (context) {
+          return const ChangeFontView();
+        },
+      },
+    ),
   ));
 }
 
@@ -58,42 +63,37 @@ class NotesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
-      child: StreamBuilder(
-          stream: FirebaseAuthService().trackUserAuthChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-            } else if (snapshot.connectionState == ConnectionState.active) {
-              if (snapshot.hasData) {
-                if (snapshot.data!.isEmailVerified) {
-                  final user = snapshot.data!;
-                  return StreamProvider(
-                    create: ((context) {
-                      return FirebaseDB().userStream(user);
-                    }),
-                    initialData: user,
-                    child: Consumer<NotesUser>(
-                      builder: (context, noteUser, child) {
-                        return HomeView(
-                          notesUser: noteUser,
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return const VerificationView();
-                }
+    return StreamBuilder(
+        stream: FirebaseAuthService().trackUserAuthChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+          } else if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.hasData) {
+              if (snapshot.data!.isEmailVerified) {
+                final user = snapshot.data!;
+                return StreamProvider(
+                  create: ((context) {
+                    return FirebaseDB().userStream(user);
+                  }),
+                  initialData: user,
+                  child: Consumer<NotesUser>(
+                    builder: (context, noteUser, child) {
+                      return HomeView(
+                        notesUser: noteUser,
+                      );
+                    },
+                  ),
+                );
               } else {
-                return const SignUpView();
+                return const VerificationView();
               }
-            } else if (snapshot.connectionState == ConnectionState.done) {}
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-    );
+            } else {
+              return const SignUpView();
+            }
+          } else if (snapshot.connectionState == ConnectionState.done) {}
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }

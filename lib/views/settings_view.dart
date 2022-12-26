@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 
@@ -12,6 +13,7 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
+    final notesUser = ModalRoute.of(context)!.settings.arguments as NotesUser;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Settings"),
@@ -40,21 +42,24 @@ class _SettingsViewState extends State<SettingsView> {
                   ListTile(
                     title: const Text("change email"),
                     onTap: () {
-                      Navigator.pushNamed(context, "changeEmail");
+                      Navigator.pushNamed(context, "changeEmail",
+                          arguments: notesUser);
                     },
                     trailing: const Icon(Icons.email),
                   ),
                   ListTile(
                     title: const Text("change password"),
                     onTap: () {
-                      Navigator.pushNamed(context, "changePassword");
+                      Navigator.pushNamed(context, "changePassword",
+                          arguments: notesUser);
                     },
                     trailing: const Icon(Icons.password),
                   ),
                   ListTile(
                     title: const Text("change font"),
                     onTap: () {
-                      Navigator.pushNamed(context, "changeFont");
+                      Navigator.pushNamed(context, "changeFont",
+                          arguments: notesUser);
                     },
                     trailing: const Icon(Icons.font_download),
                   ),

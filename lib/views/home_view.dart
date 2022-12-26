@@ -4,7 +4,7 @@ import 'package:notes/data/user_note.dart';
 import 'package:notes/services/authentication/exceptions.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
-import 'package:notes/services/font_family.dart';
+import 'package:notes/services/text_style.dart';
 import 'package:notes/views/alert_dialog.dart';
 import 'package:notes/constants/constans.dart';
 import 'package:notes/views/show_message.dart';
@@ -153,11 +153,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           title: Text(
                             text,
-                            style: TextStyle(
-                              fontFamily: getFontFamily(user.font),
-                              color:
-                                  user.darkMode ? darkModeTextColor : textColor,
-                            ),
+                            style: getTextStyle(user.font, user.darkMode),
                           ),
                           onTap: () async {
                             String newText = await Navigator.pushNamed(
@@ -235,18 +231,14 @@ class _HomeViewState extends State<HomeView> {
               color: user.darkMode ? darkModeIconColor : iconColor,
             ),
           ),
-          drawer: MyDrawer(
-            user: widget.notesUser,
-          ));
+          drawer: const MyDrawer());
     }));
   }
 }
 
 class MyDrawer extends StatelessWidget {
-  final NotesUser user;
   const MyDrawer({
     super.key,
-    required this.user,
   });
 
   @override
@@ -277,7 +269,7 @@ class MyDrawer extends StatelessWidget {
                 title: const Text("settings"),
                 trailing: const Icon(Icons.settings),
                 onTap: () {
-                  Navigator.pushNamed(context, "settings");
+                  Navigator.pushNamed(context, "settings", arguments: user);
                 },
               ),
             ),

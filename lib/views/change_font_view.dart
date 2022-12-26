@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
+import 'package:notes/services/text_style.dart';
 
-
-// font that used recently should be visible
-// futurebuilder in all views are bad for costs of firebase
+// style all texts with the method getTextStyle
+// stream of setting cost
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({
     super.key,
@@ -17,6 +18,7 @@ class ChangeFontView extends StatefulWidget {
 
 class _ChangeFontViewState extends State<ChangeFontView> {
   String? _font;
+  late NotesUser _user;
 
   @override
   void initState() {
@@ -24,38 +26,38 @@ class _ChangeFontViewState extends State<ChangeFontView> {
   }
 
   @override
+  void didChangeDependencies() {
+    _user = ModalRoute.of(context)!.settings.arguments as NotesUser;
+    _font = _user.font;
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final fonts = GoogleFonts.asMap().keys.toList(growable: false);
-    return FutureBuilder(
-      future: FirebaseDB().user,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text("choose a font"),
-            ),
-            body: ListView.builder(
-                itemCount: fonts.length,
-                itemBuilder: ((context, index) {
-                  return RadioListTile(
-                    value: fonts[index],
-                    groupValue: _font,
-                    onChanged: ((value) async {
-                      setState(() {
-                        _font = value;
-                      });
-                      final user = FirebaseAuthService().user;
-                      await FirebaseDB().updateUser(user.id, font: value);
-                    }),
-                    title: Text(fonts[index]),
-                  );
-                })),
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("choose a font"),
+      ),
+      body: ListView.builder(
+          itemCount: fonts.length,
+          itemBuilder: ((context, index) {
+            return RadioListTile(
+              title: Text(
+                fonts[index],
+                style: getTextStyle(fonts[index], _user.darkMode),
+              ),
+              value: fonts[index],
+              groupValue: _font,
+              onChanged: ((value) async {
+                setState(() {
+                  _font = value;
+                });
+                final user = FirebaseAuthService().user;
+                await FirebaseDB().updateUser(user.id, font: value);
+              }),
+            );
+          })),
     );
   }
 }
