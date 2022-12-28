@@ -92,7 +92,7 @@ class _HomeViewState extends State<HomeView> {
                 );
               }
               if (snapshot.connectionState == ConnectionState.active) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                   List<UserNote> notes = snapshot.data!;
                   List<UserNote> favoriteNotes =
                       notes.where((note) => note.favorite).toList();

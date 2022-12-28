@@ -6,7 +6,6 @@ import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 
 // style all texts with the method getTextStyle
-// stream of setting cost
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({
     super.key,
