@@ -37,9 +37,7 @@ void main() async {
           return const ResetPasswordView();
         },
         'newNote': (context) {
-          return const NewNoteVeiw(
-            text: "",
-          );
+          return const NewNoteVeiw();
         },
         'settings': (context) {
           return const SettingsView();

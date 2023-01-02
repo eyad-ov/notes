@@ -157,10 +157,8 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           onTap: () async {
                             String newText = await Navigator.pushNamed(
-                                context,
-                                user.darkMode
-                                    ? "newNoteDarkMode"
-                                    : "newNote") as String;
+                                context, "newNote",
+                                arguments: note.text) as String;
                             if (newText.isNotEmpty) {
                               await FirebaseDB()
                                   .updateNote(note.id!, newText: newText);
@@ -209,7 +207,7 @@ class _HomeViewState extends State<HomeView> {
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               String text =
-                  await Navigator.pushNamed(context, "newNote") as String;
+                  await Navigator.pushNamed(context, "newNote", arguments: "") as String;
               if (text.isNotEmpty) {
                 NotesUser user = FirebaseAuthService().user;
                 UserNote note = UserNote(

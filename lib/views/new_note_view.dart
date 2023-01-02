@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notes/constants/constans.dart';
 import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
@@ -7,20 +6,25 @@ import 'package:notes/services/text_style.dart';
 import 'package:provider/provider.dart';
 
 class NewNoteVeiw extends StatefulWidget {
-  final String text;
-  const NewNoteVeiw({super.key, required this.text});
+  const NewNoteVeiw({super.key});
 
   @override
   State<NewNoteVeiw> createState() => _NewNoteVeiwState();
 }
 
 class _NewNoteVeiwState extends State<NewNoteVeiw> {
-  final TextEditingController _noteController = TextEditingController();
+  late final TextEditingController _noteController = TextEditingController();
 
   @override
   void initState() {
-    _noteController.text = widget.text;
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final noteText = ModalRoute.of(context)!.settings.arguments as String;
+    _noteController.text = noteText;
+    super.didChangeDependencies();
   }
 
   @override

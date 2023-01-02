@@ -3,7 +3,6 @@ import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/exceptions.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/constants/constans.dart';
-import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 import 'package:notes/views/show_message.dart';
 

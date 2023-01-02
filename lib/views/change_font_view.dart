@@ -5,6 +5,8 @@ import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 
+// add new note design with title
+// share note with title and text
 // style all texts with the method getTextStyle
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({
@@ -50,7 +52,7 @@ class _ChangeFontViewState extends State<ChangeFontView> {
               groupValue: _font,
               onChanged: ((value) async {
                 setState(() {
-                  _font = value;
+                  _font = value; 
                 });
                 final user = FirebaseAuthService().user;
                 await FirebaseDB().updateUser(user.id, font: value);
