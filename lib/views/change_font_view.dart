@@ -5,8 +5,9 @@ import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 
-// add new note design with title
-// share note with title and text
+
+// fonts are too much try to make it only 20 fonts
+// font size
 // style all texts with the method getTextStyle
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({

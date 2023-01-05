@@ -25,9 +25,14 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   final TextEditingController _searchController = TextEditingController();
   bool searched = false;
+  FocusNode focusNode = FocusNode();
+  bool searchIcon = true;
 
   @override
   void initState() {
+    focusNode.addListener(() {
+      searchIcon = !searchIcon;
+    });
     _searchController.addListener(() {
       setState(() {
         if (_searchController.text.isNotEmpty) {
@@ -58,16 +63,28 @@ class _HomeViewState extends State<HomeView> {
                 borderRadius: BorderRadius.circular(32),
               ),
               child: TextField(
+                focusNode: focusNode,
                 cursorColor: Colors.white,
                 controller: _searchController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: 'Search notes',
-                  suffixIcon: Icon(
-                    Icons.search,
-                    color: iconColor,
-                  ),
+                  suffixIcon: searchIcon
+                      ? const Icon(
+                          Icons.search,
+                          color: iconColor,
+                        )
+                      : IconButton(
+                          onPressed: () {
+                            _searchController.text = "";
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          icon: const Icon(
+                            Icons.cancel,
+                            color: iconColor,
+                          ),
+                        ),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(20),
+                  contentPadding: const EdgeInsets.all(20),
                 ),
               ),
             ),
@@ -108,16 +125,13 @@ class _HomeViewState extends State<HomeView> {
                   if (searched) {
                     String word = _searchController.text;
                     notes = notes.where((note) {
-                      return note.text.contains(word);
+                      return note.text.contains(word) ||
+                          note.title.contains(word);
                     }).toList();
                   }
                   return ListView(
                     children: notes.map((note) {
-                      String text = note.text;
-                      if (note.text.length > 20) {
-                        text = note.text.substring(0, 20);
-                        text += "...";
-                      }
+                      String title = note.title;
                       DateTime dateTime = note.dateTime;
                       String minute = dateTime.minute.toString().length < 2
                           ? "0${dateTime.minute}"
@@ -152,16 +166,19 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           ),
                           title: Text(
-                            text,
+                            title.isEmpty ? "untitled" : title,
                             style: getTextStyle(user.font, user.darkMode),
                           ),
                           onTap: () async {
-                            String newText = await Navigator.pushNamed(
-                                context, "newNote",
-                                arguments: note.text) as String;
-                            if (newText.isNotEmpty) {
-                              await FirebaseDB()
-                                  .updateNote(note.id!, newText: newText);
+                            final args = await Navigator.pushNamed(
+                                    context, "newNote",
+                                    arguments: [note.title, note.text])
+                                as List<String>;
+                            String newTitle = args[0];
+                            String newText = args[1];
+                            if (newTitle.isNotEmpty || newText.isNotEmpty) {
+                              await FirebaseDB().updateNote(note.id!,
+                                  newTitle: newTitle, newText: newText);
                             }
                           },
                           subtitle: Text("$hour:$minute  $day/$month/$year"),
@@ -170,7 +187,7 @@ class _HomeViewState extends State<HomeView> {
                             children: [
                               IconButton(
                                 onPressed: () {
-                                  Share.share(note.text);
+                                  Share.share("${note.title}:\n\n${note.text}");
                                 },
                                 icon: const Icon(Icons.share),
                               ),
@@ -206,14 +223,18 @@ class _HomeViewState extends State<HomeView> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              String text =
-                  await Navigator.pushNamed(context, "newNote", arguments: "") as String;
-              if (text.isNotEmpty) {
+              final args = await Navigator.pushNamed(context, "newNote",
+                  arguments: ["", ""]) as List<String>;
+
+              String title = args[0];
+              String text = args[1];
+              if (title.isNotEmpty || text.isNotEmpty) {
                 NotesUser user = FirebaseAuthService().user;
                 UserNote note = UserNote(
                   id: null,
                   userId: user.id,
                   userEmail: user.email,
+                  title: title,
                   text: text,
                   dateTime: DateTime.now(),
                   favorite: false,

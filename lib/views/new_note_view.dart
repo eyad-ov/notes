@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/constants/constans.dart';
 import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
@@ -14,6 +15,8 @@ class NewNoteVeiw extends StatefulWidget {
 
 class _NewNoteVeiwState extends State<NewNoteVeiw> {
   late final TextEditingController _noteController = TextEditingController();
+  late final TextEditingController _noteTitleController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -22,8 +25,9 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
 
   @override
   void didChangeDependencies() {
-    final noteText = ModalRoute.of(context)!.settings.arguments as String;
-    _noteController.text = noteText;
+    final args = ModalRoute.of(context)!.settings.arguments as List<String>;
+    _noteTitleController.text = args[0];
+    _noteController.text = args[1];
     super.didChangeDependencies();
   }
 
@@ -42,20 +46,46 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
         builder: ((context, user, child) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text("Adding new Note"),
+              title: Text(_noteTitleController.text.toUpperCase()),
               backgroundColor: Colors.red.shade300,
             ),
             body: Padding(
               padding: const EdgeInsets.all(10),
-              child: TextField(
-                style: getTextStyle(user.font, user.darkMode),
-                controller: _noteController,
-                maxLines: null,
-              ),
+              child: ListView(children: [
+                Container(
+                  color: noteColor,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: "Title",
+                      counterText: "",
+                    ),
+                    style: getTextStyle(user.font, user.darkMode),
+                    controller: _noteTitleController,
+                    maxLines: 1,
+                    maxLength: 20,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  color: noteColor,
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      hintText: "Your note",
+                    ),
+                    style: getTextStyle(user.font, user.darkMode),
+                    controller: _noteController,
+                    maxLines: null,
+                  ),
+                ),
+              ]),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.pop(context, _noteController.text);
+                final args = [_noteTitleController.text, _noteController.text];
+                Navigator.pop(context, args);
               },
               child: const Icon(Icons.save),
             ),

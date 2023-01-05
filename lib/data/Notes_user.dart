@@ -20,7 +20,7 @@ class NotesUser {
       email: firebaseUser.email!,
       isEmailVerified: firebaseUser.emailVerified,
       darkMode: false,
-      font: "openSans"
+      font: "Open Sans"
     );
   }
 }

@@ -38,6 +38,7 @@ class FirebaseDB {
     await _firestore.collection('users').doc(user.id).set({
       'email': user.email,
       'dark_mode': user.darkMode,
+      'font': user.font,
     });
   }
 
@@ -52,7 +53,7 @@ class FirebaseDB {
     if (email != null) {
       await _firestore.collection('users').doc(userId).update({'email': email});
     }
-    if(font != null){
+    if (font != null) {
       await _firestore.collection('users').doc(userId).update({'font': font});
     }
   }
@@ -82,10 +83,19 @@ class FirebaseDB {
   }
 
   Future<void> updateNote(String noteId,
-      {String? newText, String? email, bool? favorite}) async {
-    if (newText != null) {
-      newText = AESEncryption.encrypt(newText);
+      {String? newTitle,
+      String? newText,
+      String? email,
+      bool? favorite}) async {
+    if (newText != null && newTitle != null) {
+      if (newTitle.isNotEmpty) {
+        newTitle = AESEncryption.encrypt(newTitle);
+      }
+      if (newText.isNotEmpty) {
+        newText = AESEncryption.encrypt(newText);
+      }
       await _firestore.collection('notes').doc(noteId).update({
+        'title': newTitle,
         'text': newText,
         'date': DateTime.now(),
       });
@@ -103,10 +113,16 @@ class FirebaseDB {
   }
 
   Future<void> addNote(UserNote note) async {
-    note.text = AESEncryption.encrypt(note.text);
+    if (note.title.isNotEmpty) {
+      note.title = AESEncryption.encrypt(note.title);
+    }
+    if (note.text.isNotEmpty) {
+      note.text = AESEncryption.encrypt(note.text);
+    }
     await _firestore.collection('notes').add({
       'user_id': note.userId,
       'user_email': note.userEmail,
+      'title': note.title,
       'text': note.text,
       'date': DateTime.now(),
       'favorite': false,
@@ -117,7 +133,6 @@ class FirebaseDB {
       NotesUser user) {
     return _firestore.collection('users').doc(user.id).snapshots();
   }
-
 
   Stream<NotesUser> userStream(NotesUser user) {
     _usersQuerySnapShotStream(user).listen((documentSnapshot) {
@@ -151,8 +166,14 @@ class FirebaseDB {
         final id = queryDocumentSnapshot.id;
         final userId = queryDocumentSnapshot.data()['user_id'] as String;
         final userEmail = queryDocumentSnapshot.data()['user_email'] as String;
+        String title = queryDocumentSnapshot.data()['title'] as String;
         String text = queryDocumentSnapshot.data()['text'] as String;
-        text = AESEncryption.decrypt(text);
+        if (title.isNotEmpty) {
+          title = AESEncryption.decrypt(title);
+        }
+        if (text.isNotEmpty) {
+          text = AESEncryption.decrypt(text);
+        }
         final dateTime =
             (queryDocumentSnapshot.data()['date'] as Timestamp).toDate();
         final favorite = queryDocumentSnapshot.data()['favorite'] as bool;
@@ -160,6 +181,7 @@ class FirebaseDB {
             id: id,
             userId: userId,
             userEmail: userEmail,
+            title: title,
             text: text,
             dateTime: dateTime,
             favorite: favorite);
