@@ -114,7 +114,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                 }
               },
               child: Text("change my email",
-                  style: getTextStyle(user.font, user.darkMode)),
+                  style: getTextStyle(user.font, user.darkMode,user.fontSize)),
             ),
           ),
         ],

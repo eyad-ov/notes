@@ -167,7 +167,11 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           title: Text(
                             title.isEmpty ? "untitled" : title,
-                            style: getTextStyle(user.font, user.darkMode),
+                            style: getTextStyle(
+                              user.font,
+                              user.darkMode,
+                              user.fontSize
+                            ),
                           ),
                           onTap: () async {
                             final args = await Navigator.pushNamed(

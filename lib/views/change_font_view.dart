@@ -7,7 +7,6 @@ import 'package:notes/services/text_style.dart';
 
 
 // fonts are too much try to make it only 20 fonts
-// font size
 // style all texts with the method getTextStyle
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({
@@ -47,7 +46,7 @@ class _ChangeFontViewState extends State<ChangeFontView> {
             return RadioListTile(
               title: Text(
                 fonts[index],
-                style: getTextStyle(fonts[index], _user.darkMode),
+                style: getTextStyle(fonts[index], _user.darkMode,_user.fontSize),
               ),
               value: fonts[index],
               groupValue: _font,

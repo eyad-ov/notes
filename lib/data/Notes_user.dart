@@ -6,21 +6,23 @@ class NotesUser {
   final bool isEmailVerified;
   bool darkMode;
   String font;
+  double fontSize;
 
   NotesUser(
       {required this.id,
       required this.email,
       required this.isEmailVerified,
       required this.darkMode,
-      required this.font});
+      required this.font,
+      required this.fontSize});
 
   factory NotesUser.fromFirebaseUser(User firebaseUser) {
     return NotesUser(
-      id: firebaseUser.uid,
-      email: firebaseUser.email!,
-      isEmailVerified: firebaseUser.emailVerified,
-      darkMode: false,
-      font: "Open Sans"
-    );
+        id: firebaseUser.uid,
+        email: firebaseUser.email!,
+        isEmailVerified: firebaseUser.emailVerified,
+        darkMode: false,
+        fontSize: 18,
+        font: "Open Sans");
   }
 }

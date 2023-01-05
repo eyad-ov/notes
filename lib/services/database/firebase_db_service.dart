@@ -26,12 +26,14 @@ class FirebaseDB {
     final email = doc.data()!['email'] as String;
     final darkMode = doc.data()!['dark_mode'] as bool;
     final font = doc.data()!['font'] as String;
+    final fontSize = doc.data()!['font_size'] as double;
     return NotesUser(
         id: id,
         email: email,
         isEmailVerified: true,
         darkMode: darkMode,
-        font: font);
+        font: font,
+        fontSize: fontSize);
   }
 
   Future<void> addNewUser(NotesUser user) async {
@@ -39,11 +41,12 @@ class FirebaseDB {
       'email': user.email,
       'dark_mode': user.darkMode,
       'font': user.font,
+      'font_size': user.fontSize,
     });
   }
 
   Future<void> updateUser(String userId,
-      {bool? darkMode, String? email, String? font}) async {
+      {bool? darkMode, String? email, String? font, double? fontSize}) async {
     if (darkMode != null) {
       await _firestore
           .collection('users')
@@ -55,6 +58,12 @@ class FirebaseDB {
     }
     if (font != null) {
       await _firestore.collection('users').doc(userId).update({'font': font});
+    }
+    if (fontSize != null) {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({'font_size': fontSize});
     }
   }
 
@@ -140,12 +149,15 @@ class FirebaseDB {
       String email = documentSnapshot.data()!['email'];
       bool darkMode = documentSnapshot.data()!['dark_mode'];
       String font = documentSnapshot.data()!['font'];
+      double fontSize = documentSnapshot.data()!['font_size'];
       final user = NotesUser(
-          id: id,
-          email: email,
-          isEmailVerified: true,
-          darkMode: darkMode,
-          font: font);
+        id: id,
+        email: email,
+        isEmailVerified: true,
+        darkMode: darkMode,
+        font: font,
+        fontSize: fontSize,
+      );
       _userStreamController.add(user);
     });
 

@@ -120,7 +120,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               },
               child: Text(
                 "change my password",
-                style: getTextStyle(user.font, user.darkMode),
+                style: getTextStyle(user.font, user.darkMode,user.fontSize),
               ),
             ),
           ),

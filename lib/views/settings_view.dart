@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/constants/constans.dart';
 import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 
@@ -59,6 +60,46 @@ class _SettingsViewState extends State<SettingsView> {
               Navigator.pushNamed(context, "changeFont", arguments: user);
             },
             trailing: const Icon(Icons.font_download),
+          ),
+          ListTile(
+            title: const Text("font size"),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () async {
+                    double newSize = user.fontSize + 1;
+                    if (newSize <= 40) {
+                      await FirebaseDB().updateUser(user.id, fontSize: newSize);
+                      setState(() {
+                        user.fontSize++;
+                      });
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    color: iconColor,
+                  ),
+                ),
+                Text(user.fontSize.toInt().toString()),
+                IconButton(
+                  onPressed: () async {
+                    double newSize = user.fontSize - 1;
+                    if (newSize >= 10) {
+                      await FirebaseDB().updateUser(user.id, fontSize: newSize);
+                      setState(() {
+                        user.fontSize--;
+                      });
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.remove,
+                    color: iconColor,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

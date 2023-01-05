@@ -59,7 +59,7 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
                       hintText: "Title",
                       counterText: "",
                     ),
-                    style: getTextStyle(user.font, user.darkMode),
+                    style: getTextStyle(user.font, user.darkMode,user.fontSize),
                     controller: _noteTitleController,
                     maxLines: 1,
                     maxLength: 20,
@@ -75,7 +75,7 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
                     decoration: const InputDecoration(
                       hintText: "Your note",
                     ),
-                    style: getTextStyle(user.font, user.darkMode),
+                    style: getTextStyle(user.font, user.darkMode,user.fontSize),
                     controller: _noteController,
                     maxLines: null,
                   ),
