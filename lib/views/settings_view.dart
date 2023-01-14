@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:notes/constants/constans.dart';
 import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
+import 'package:notes/services/text_style.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -22,13 +23,21 @@ class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          user.darkMode ? darkModeHomeBackgroundColor : homeBackgroundColor,
       appBar: AppBar(
+        backgroundColor: user.darkMode
+            ? darkModeAppBarBackgroundColor
+            : appBarBackgroundColor,
         title: const Text("Settings"),
       ),
       body: ListView(
         children: [
           ListTile(
-            title: const Text("Dark mode"),
+            title: Text(
+              "Dark mode",
+              style: getTextStyle(user.font, user.darkMode, user.fontSize),
+            ),
             trailing: Checkbox(
               value: user.darkMode,
               onChanged: (value) async {
@@ -41,28 +50,40 @@ class _SettingsViewState extends State<SettingsView> {
             ),
           ),
           ListTile(
-            title: const Text("change email"),
+            title: Text(
+              "change email",
+              style: getTextStyle(user.font, user.darkMode, user.fontSize),
+            ),
             onTap: () {
               Navigator.pushNamed(context, "changeEmail", arguments: user);
             },
             trailing: const Icon(Icons.email),
           ),
           ListTile(
-            title: const Text("change password"),
+            title: Text(
+              "change password",
+              style: getTextStyle(user.font, user.darkMode, user.fontSize),
+            ),
             onTap: () {
               Navigator.pushNamed(context, "changePassword", arguments: user);
             },
             trailing: const Icon(Icons.password),
           ),
           ListTile(
-            title: const Text("change font"),
+            title: Text(
+              "change font",
+              style: getTextStyle(user.font, user.darkMode, user.fontSize),
+            ),
             onTap: () {
               Navigator.pushNamed(context, "changeFont", arguments: user);
             },
             trailing: const Icon(Icons.font_download),
           ),
           ListTile(
-            title: const Text("font size"),
+            title: Text(
+              "font size",
+              style: getTextStyle(user.font, user.darkMode, user.fontSize),
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -77,9 +98,9 @@ class _SettingsViewState extends State<SettingsView> {
                       });
                     }
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.add,
-                    color: iconColor,
+                    color: user.darkMode ? darkModeIconColor : iconColor,
                   ),
                 ),
                 Text(user.fontSize.toInt().toString()),
@@ -93,9 +114,9 @@ class _SettingsViewState extends State<SettingsView> {
                       });
                     }
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.remove,
-                    color: iconColor,
+                    color: user.darkMode ? darkModeIconColor : iconColor,
                   ),
                 ),
               ],

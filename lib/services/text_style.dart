@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/constants/constans.dart';
 
-TextStyle getTextStyle(String font, bool darkmode, double fontSize) {
+TextStyle getTextStyle(String font, bool darkMode, double fontSize) {
   String? fontFamily = GoogleFonts.getFont(font).fontFamily;
   Color color;
-  if (darkmode) {
+  if (darkMode) {
     color = darkModeTextColor;
   } else {
     color = textColor;

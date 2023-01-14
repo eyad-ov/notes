@@ -69,18 +69,19 @@ class _HomeViewState extends State<HomeView> {
                 decoration: InputDecoration(
                   hintText: 'Search notes',
                   suffixIcon: searchIcon
-                      ? const Icon(
+                      ? Icon(
                           Icons.search,
-                          color: iconColor,
+                          color: user.darkMode ? darkModeIconColor : iconColor,
                         )
                       : IconButton(
                           onPressed: () {
                             _searchController.text = "";
                             FocusManager.instance.primaryFocus?.unfocus();
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.cancel,
-                            color: iconColor,
+                            color:
+                                user.darkMode ? darkModeIconColor : iconColor,
                           ),
                         ),
                   border: InputBorder.none,
@@ -162,16 +163,15 @@ class _HomeViewState extends State<HomeView> {
                             },
                             icon: Icon(
                               Icons.star,
-                              color: note.favorite ? Colors.red : Colors.grey,
+                              color: note.favorite
+                                  ? Colors.yellow[400]
+                                  : Colors.grey,
                             ),
                           ),
                           title: Text(
                             title.isEmpty ? "untitled" : title,
                             style: getTextStyle(
-                              user.font,
-                              user.darkMode,
-                              user.fontSize
-                            ),
+                                user.font, user.darkMode, user.fontSize),
                           ),
                           onTap: () async {
                             final args = await Navigator.pushNamed(
@@ -193,7 +193,12 @@ class _HomeViewState extends State<HomeView> {
                                 onPressed: () {
                                   Share.share("${note.title}:\n\n${note.text}");
                                 },
-                                icon: const Icon(Icons.share),
+                                icon: Icon(
+                                  Icons.share,
+                                  color: user.darkMode
+                                      ? darkModeIconColor
+                                      : iconColor,
+                                ),
                               ),
                               IconButton(
                                 onPressed: () async {
@@ -268,7 +273,8 @@ class MyDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<NotesUser>(builder: ((context, user, child) {
       return Drawer(
-        backgroundColor: Colors.grey.shade300,
+        backgroundColor:
+            user.darkMode ? darkModeHomeBackgroundColor : homeBackgroundColor,
         child: ListView(
           children: [
             Container(
@@ -283,13 +289,14 @@ class MyDrawer extends StatelessWidget {
               ]),
             ),
             Card(
-              color: Colors.blue.shade100,
+              color: user.darkMode ? darkModeNoteColor : noteColor,
               elevation: 10,
               margin: const EdgeInsets.all(5),
               child: ListTile(
-                style: ListTileStyle.drawer,
-                textColor: Colors.pink,
-                title: const Text("settings"),
+                title: Text(
+                  "settings",
+                  style: getTextStyle(user.font, user.darkMode, user.fontSize),
+                ),
                 trailing: const Icon(Icons.settings),
                 onTap: () {
                   Navigator.pushNamed(context, "settings", arguments: user);
@@ -297,13 +304,14 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             Card(
-              color: Colors.blue.shade100,
+              color: user.darkMode ? darkModeNoteColor : noteColor,
               elevation: 10,
               margin: const EdgeInsets.all(5),
               child: ListTile(
-                style: ListTileStyle.drawer,
-                textColor: Colors.pink,
-                title: const Text("sign out"),
+                title: Text(
+                  "sign out",
+                  style: getTextStyle(user.font, user.darkMode, user.fontSize),
+                ),
                 trailing: const Icon(Icons.logout),
                 onTap: () async {
                   bool sure = await showAlertDialog(context, "sign out");
@@ -312,13 +320,14 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             Card(
-              color: Colors.blue.shade100,
+              color: user.darkMode ? darkModeNoteColor : noteColor,
               elevation: 10,
               margin: const EdgeInsets.all(5),
               child: ListTile(
-                style: ListTileStyle.drawer,
-                textColor: Colors.pink,
-                title: const Text("delete account"),
+                title: Text(
+                  "delete account",
+                  style: getTextStyle(user.font, user.darkMode, user.fontSize),
+                ),
                 trailing: const Icon(Icons.delete_forever),
                 onTap: () async {
                   try {

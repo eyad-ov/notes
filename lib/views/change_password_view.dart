@@ -29,6 +29,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as NotesUser;
     return Scaffold(
+      backgroundColor:
+          user.darkMode ? darkModeHomeBackgroundColor : homeBackgroundColor,
       appBar: AppBar(
         title: const Text("Change password"),
         backgroundColor: user.darkMode
@@ -47,11 +49,14 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 3,
-                  color: Colors.red.shade100,
+                  color: user.darkMode ? darkModeBorderColor : borderColor,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
               hintText: "New password",
+              hintStyle: TextStyle(
+                color: user.darkMode ? darkModeTextColor : textColor,
+              ),
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
@@ -74,11 +79,14 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 3,
-                  color: Colors.red.shade100,
+                  color: user.darkMode ? darkModeBorderColor : borderColor,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
               hintText: "enter the password again",
+              hintStyle: TextStyle(
+                color: user.darkMode ? darkModeTextColor : textColor,
+              ),
               suffixIcon: IconButton(
                 onPressed: () {
                   setState(() {
@@ -95,7 +103,10 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             height: 10,
           ),
           Center(
-            child: TextButton(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: user.darkMode ? darkModeNoteColor : noteColor,
+              ),
               onPressed: () async {
                 try {
                   final newPassword1 = _passwordController1.text;
@@ -120,7 +131,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               },
               child: Text(
                 "change my password",
-                style: getTextStyle(user.font, user.darkMode,user.fontSize),
+                style: getTextStyle(user.font, user.darkMode, user.fontSize),
               ),
             ),
           ),

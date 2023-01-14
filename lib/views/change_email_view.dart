@@ -3,7 +3,6 @@ import 'package:notes/data/notes_user.dart';
 import 'package:notes/main.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/constants/constans.dart';
-import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 import 'package:notes/views/show_message.dart';
 
@@ -31,6 +30,8 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
   Widget build(BuildContext context) {
     final user = ModalRoute.of(context)!.settings.arguments as NotesUser;
     return Scaffold(
+      backgroundColor:
+          user.darkMode ? darkModeHomeBackgroundColor : homeBackgroundColor,
       appBar: AppBar(
         title: const Text("Change email"),
         backgroundColor: user.darkMode
@@ -45,7 +46,10 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.login),
+            icon: Icon(
+              Icons.login,
+              color: user.darkMode ? darkModeIconColor : iconColor,
+            ),
           ),
         ],
       ),
@@ -61,11 +65,14 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 3,
-                  color: Colors.red.shade100,
+                  color: user.darkMode ? darkModeBorderColor : borderColor,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
               hintText: "New email address",
+              hintStyle: TextStyle(
+                color: user.darkMode ? darkModeTextColor : textColor,
+              ),
             ),
           ),
           const SizedBox(
@@ -78,18 +85,24 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   width: 3,
-                  color: Colors.red.shade100,
+                  color: user.darkMode ? darkModeBorderColor : borderColor,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
               hintText: "enter the email address again",
+              hintStyle: TextStyle(
+                color: user.darkMode ? darkModeTextColor : textColor,
+              ),
             ),
           ),
           const SizedBox(
             height: 10,
           ),
           Center(
-            child: TextButton(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: user.darkMode ? darkModeNoteColor : noteColor,
+              ),
               onPressed: () async {
                 try {
                   final newEmail1 = _emailController1.text;
@@ -114,7 +127,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
                 }
               },
               child: Text("change my email",
-                  style: getTextStyle(user.font, user.darkMode,user.fontSize)),
+                  style: getTextStyle(user.font, user.darkMode, user.fontSize)),
             ),
           ),
         ],

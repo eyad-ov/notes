@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/constants/constans.dart';
 import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 
-
 // fonts are too much try to make it only 20 fonts
-// style all texts with the method getTextStyle
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({
     super.key,
@@ -35,9 +34,15 @@ class _ChangeFontViewState extends State<ChangeFontView> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ModalRoute.of(context)!.settings.arguments as NotesUser;
     final fonts = GoogleFonts.asMap().keys.toList(growable: false);
     return Scaffold(
+      backgroundColor:
+          user.darkMode ? darkModeHomeBackgroundColor : homeBackgroundColor,
       appBar: AppBar(
+        backgroundColor: user.darkMode
+            ? darkModeAppBarBackgroundColor
+            : appBarBackgroundColor,
         title: const Text("choose a font"),
       ),
       body: ListView.builder(
@@ -46,13 +51,14 @@ class _ChangeFontViewState extends State<ChangeFontView> {
             return RadioListTile(
               title: Text(
                 fonts[index],
-                style: getTextStyle(fonts[index], _user.darkMode,_user.fontSize),
+                style:
+                    getTextStyle(fonts[index], _user.darkMode, _user.fontSize),
               ),
               value: fonts[index],
               groupValue: _font,
               onChanged: ((value) async {
                 setState(() {
-                  _font = value; 
+                  _font = value;
                 });
                 final user = FirebaseAuthService().user;
                 await FirebaseDB().updateUser(user.id, font: value);

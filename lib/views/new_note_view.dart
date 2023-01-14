@@ -45,21 +45,27 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
       child: Consumer<NotesUser>(
         builder: ((context, user, child) {
           return Scaffold(
+            backgroundColor: user.darkMode
+                ? darkModeHomeBackgroundColor
+                : homeBackgroundColor,
             appBar: AppBar(
               title: Text(_noteTitleController.text.toUpperCase()),
-              backgroundColor: Colors.red.shade300,
+              backgroundColor: user.darkMode
+                  ? darkModeAppBarBackgroundColor
+                  : appBarBackgroundColor,
             ),
             body: Padding(
               padding: const EdgeInsets.all(10),
               child: ListView(children: [
                 Container(
-                  color: noteColor,
+                  color: user.darkMode ? darkModeNoteColor : noteColor,
                   child: TextField(
                     decoration: const InputDecoration(
                       hintText: "Title",
                       counterText: "",
                     ),
-                    style: getTextStyle(user.font, user.darkMode,user.fontSize),
+                    style:
+                        getTextStyle(user.font, user.darkMode, user.fontSize),
                     controller: _noteTitleController,
                     maxLines: 1,
                     maxLength: 20,
@@ -70,12 +76,13 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
                   height: 5,
                 ),
                 Container(
-                  color: noteColor,
+                  color: user.darkMode ? darkModeNoteColor : noteColor,
                   child: TextField(
                     decoration: const InputDecoration(
                       hintText: "Your note",
                     ),
-                    style: getTextStyle(user.font, user.darkMode,user.fontSize),
+                    style:
+                        getTextStyle(user.font, user.darkMode, user.fontSize),
                     controller: _noteController,
                     maxLines: null,
                   ),
@@ -83,6 +90,9 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
               ]),
             ),
             floatingActionButton: FloatingActionButton(
+              backgroundColor: user.darkMode
+                  ? darkModeFloatingActionButtonBackgroundColor
+                  : floatingActionButtonBackgroundColor,
               onPressed: () {
                 final args = [_noteTitleController.text, _noteController.text];
                 Navigator.pop(context, args);
