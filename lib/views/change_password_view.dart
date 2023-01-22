@@ -6,6 +6,7 @@ import 'package:notes/constants/constans.dart';
 import 'package:notes/services/text_style.dart';
 import 'package:notes/views/show_message.dart';
 
+/// the screen lets user change password
 class ChangePasswordView extends StatefulWidget {
   const ChangePasswordView({super.key});
 
@@ -107,6 +108,8 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: user.darkMode ? darkModeNoteColor : noteColor,
               ),
+              
+              // update the user password
               onPressed: () async {
                 try {
                   final newPassword1 = _passwordController1.text;
@@ -140,6 +143,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
     );
   }
 
+  /// shows snackbar to notify the user about success 
   void showSnackbar(String msg) {
     final snackBar = SnackBar(
       content: Text(msg),

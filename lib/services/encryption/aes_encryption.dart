@@ -1,11 +1,7 @@
 import 'package:encrypt/encrypt.dart';
 
+/// responsible for encryption/decryption of notes in database
 class AESEncryption {
-
-//find a more secure way of generating keys/iv randomly for every user
-// and find a way to store theses keys in ordere to retrieve them after
-// 1.approach: server
-// 2.approach: local with package flutter_secure_storage 
 
   static final key = Key.fromUtf8("A%D*G-JaNdRgUkXp");
   static final iv = IV.fromUtf8("123456789abcdefg");

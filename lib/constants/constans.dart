@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// the colors pairs for dark mode and normal mode
+
 final floatingActionButtonBackgroundColor = Colors.green.shade300;
 const textColor = Colors.black;
 final searchFieldColor = Colors.red.shade200;

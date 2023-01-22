@@ -7,6 +7,7 @@ import 'package:notes/views/show_message.dart';
 
 import '../data/notes_user.dart';
 
+/// the screen lets user sign up
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
 

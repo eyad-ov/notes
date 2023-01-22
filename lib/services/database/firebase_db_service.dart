@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
-import 'package:notes/services/encryption.dart/aes_encryption.dart';
+import 'package:notes/services/encryption/aes_encryption.dart';
 import '../../data/notes_user.dart';
 import '../../data/user_note.dart';
 
+/// Responsible for all database operations, like adding notes, updating notes etc...
 class FirebaseDB {
   static final FirebaseDB _firebaseDB = FirebaseDB._internal();
   factory FirebaseDB() {
@@ -13,12 +14,16 @@ class FirebaseDB {
   FirebaseDB._internal();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  
+  /// stream to notify about all changes of notes. 
   final StreamController<List<UserNote>> _noteStreamController =
       StreamController.broadcast();
 
+  /// stream to notify about all changes of user.
   final StreamController<NotesUser> _userStreamController =
       StreamController.broadcast();
 
+  /// returns the user from database based on id.
   Future<NotesUser> get user async {
     final id = FirebaseAuthService().user.id;
     final docRef = _firestore.collection('users').doc(id);
@@ -36,6 +41,7 @@ class FirebaseDB {
         fontSize: fontSize);
   }
 
+  /// adds a new user in database
   Future<void> addNewUser(NotesUser user) async {
     await _firestore.collection('users').doc(user.id).set({
       'email': user.email,
@@ -45,6 +51,7 @@ class FirebaseDB {
     });
   }
 
+  /// can update [darkMode], [email], [font] or [fontSize] of a user
   Future<void> updateUser(String userId,
       {bool? darkMode, String? email, String? font, double? fontSize}) async {
     if (darkMode != null) {
@@ -67,6 +74,7 @@ class FirebaseDB {
     }
   }
 
+  /// deletes all the notes of specific user
   Future<void> deleteAllNotesOfUser(NotesUser user) async {
     final notes = await getAllNotesOfUser(user);
     for (var noteId in notes) {
@@ -75,6 +83,7 @@ class FirebaseDB {
     await _firestore.collection('users').doc(user.id).delete();
   }
 
+  /// returns all the notes of a specific user
   Future<List<String>> getAllNotesOfUser(NotesUser user) async {
     List<String> notes = [];
     final querySnapshot = await _firestore
@@ -87,10 +96,12 @@ class FirebaseDB {
     return notes;
   }
 
+  /// deletes the note with [noteId] from database
   Future<void> deleteNote(String noteId) async {
     await _firestore.collection('notes').doc(noteId).delete();
   }
 
+  /// can update the title [newTitle], the text [newText], the email [email] or mark as [favorite] for the note with [noteId]
   Future<void> updateNote(String noteId,
       {String? newTitle,
       String? newText,
@@ -121,6 +132,7 @@ class FirebaseDB {
     }
   }
 
+  /// encrypts the title and text of the note then adds it to the database
   Future<void> addNote(UserNote note) async {
     if (note.title.isNotEmpty) {
       note.title = AESEncryption.encrypt(note.title);
@@ -138,11 +150,13 @@ class FirebaseDB {
     });
   }
 
+  /// stream that notify changes of a specific user in database
   Stream<DocumentSnapshot<Map<String, dynamic>>> _usersQuerySnapShotStream(
       NotesUser user) {
     return _firestore.collection('users').doc(user.id).snapshots();
   }
 
+  /// stream that listens to changes of a specific user
   Stream<NotesUser> userStream(NotesUser user) {
     _usersQuerySnapShotStream(user).listen((documentSnapshot) {
       String id = documentSnapshot.id;
@@ -164,6 +178,7 @@ class FirebaseDB {
     return _userStreamController.stream;
   }
 
+  /// stream that notify changes of all nontes that belongs to specific user 
   Stream<QuerySnapshot<Map<String, dynamic>>> _notesQuerySnapShotStream(
       NotesUser user) {
     return _firestore
@@ -172,6 +187,7 @@ class FirebaseDB {
         .snapshots();
   }
 
+  /// stream that listens to changes of all nontes that belongs to specific user 
   Stream<List<UserNote>> userNoteStream(NotesUser user) {
     _notesQuerySnapShotStream(user).listen((querySnapshot) {
       final notes = querySnapshot.docs.map((queryDocumentSnapshot) {

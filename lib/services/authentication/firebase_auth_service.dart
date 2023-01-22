@@ -3,12 +3,15 @@ import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/authentication/exceptions.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 
+/// Responsible of all Authentication services like signing up, loging in etc...
 class FirebaseAuthService {
   FirebaseAuthService() {
+    // the authentication data will be saved locally
     _firebaseAuth.setPersistence(Persistence.LOCAL);
   }
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+  /// updates user email with [newEmail]
   Future<void> updateUserEmail(String newEmail) async {
     try {
       await _firebaseAuth.currentUser!.updateEmail(newEmail);
@@ -23,6 +26,7 @@ class FirebaseAuthService {
     }
   }
 
+  /// updates user password with [newPassword] 
   Future<void> updateUserPassword(String newPassword) async {
     try {
       await _firebaseAuth.currentUser!.updatePassword(newPassword);
@@ -37,6 +41,7 @@ class FirebaseAuthService {
     }
   }
 
+  /// registers a new user in firebase with [email] and [password]
   Future<NotesUser> signUpWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
@@ -55,8 +60,10 @@ class FirebaseAuthService {
     throw GeneralException();
   }
 
+  /// gets the current user
   NotesUser get user => NotesUser.fromFirebaseUser(_firebaseAuth.currentUser!);
-
+  
+  /// signs the user in with [email] and [password]
   Future<void> signInWithEmailAndPassword(
       {required String email, required String password}) async {
     try {
@@ -83,16 +90,19 @@ class FirebaseAuthService {
     }
   }
 
+  /// signs the user out
   Future<void> signOut() async {
     await _firebaseAuth.signOut();
   }
 
+  /// sends the user an email for verfication
   Future<void> sendEmailVerification() async {
     if (_firebaseAuth.currentUser != null) {
       await _firebaseAuth.currentUser!.sendEmailVerification();
     }
   }
 
+  /// deletes the user from database
   Future<void> deleteUser() async {
     if (_firebaseAuth.currentUser != null) {
       try {
@@ -107,6 +117,7 @@ class FirebaseAuthService {
     }
   }
 
+  /// sends an email to user to let him reset password
   Future<void> sendEmailToResetPassword({required String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
@@ -121,6 +132,7 @@ class FirebaseAuthService {
     }
   }
 
+  /// listens to changes in the authentication state of user, like logged in or logged out... 
   Stream<NotesUser?> trackUserAuthChanges() {
     return _firebaseAuth.userChanges().map((user) {
       return NotesUser.fromFirebaseUser(user!);

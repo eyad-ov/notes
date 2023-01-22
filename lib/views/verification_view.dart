@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/authentication/firebase_auth_service.dart';
 
+/// the screen lets the user verfiy email
 class VerificationView extends StatefulWidget {
   const VerificationView({super.key});
 

@@ -11,6 +11,8 @@ import 'package:notes/views/show_message.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+/// This widget is showed when the user is signed in.
+/// The user's notes will be shown sorted by date, unless the notes are marked as favorites. 
 class HomeView extends StatefulWidget {
   final NotesUser notesUser;
   const HomeView({
@@ -30,9 +32,12 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
+    // if user currently is not searching for notes, the search field should be "unfocused"
     focusNode.addListener(() {
       searchIcon = !searchIcon;
     });
+
+    //when user type something in the search field, the notes shown should be updated correspondingly
     _searchController.addListener(() {
       setState(() {
         if (_searchController.text.isNotEmpty) {
@@ -51,6 +56,8 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+
+    // this consumer catches any changes of the user, such as darkMode option.
     return Consumer<NotesUser>(builder: ((context, user, child) {
       return Scaffold(
           backgroundColor:
@@ -94,6 +101,8 @@ class _HomeViewState extends State<HomeView> {
                 ? darkModeAppBarBackgroundColor
                 : appBarBackgroundColor,
           ),
+          // the StreamBuilder waits for any changes in the notes of current user,such as: new created notes, note got deleted..
+          // and rebuilds itself to show the new state of the notes.
           body: StreamBuilder(
             stream: FirebaseDB().userNoteStream(FirebaseAuthService().user),
             builder: (context, snapshot) {
@@ -111,6 +120,9 @@ class _HomeViewState extends State<HomeView> {
               }
               if (snapshot.connectionState == ConnectionState.active) {
                 if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  // all notes should be fetched first.
+                  // the notes are sorted by date, unless the notes are marked as favorites.
+                  // the favorite notes will be shown first.
                   List<UserNote> notes = snapshot.data!;
                   List<UserNote> favoriteNotes =
                       notes.where((note) => note.favorite).toList();
@@ -123,6 +135,8 @@ class _HomeViewState extends State<HomeView> {
                   notes.clear();
                   notes.addAll(favoriteNotes);
                   notes.addAll(notFavoriteNotes);
+
+                  // if the user currently is searching, the notes that will be shown are only the ones that match the search word.
                   if (searched) {
                     String word = _searchController.text;
                     notes = notes.where((note) {
@@ -157,6 +171,8 @@ class _HomeViewState extends State<HomeView> {
                         color: user.darkMode ? darkModeNoteColor : noteColor,
                         child: ListTile(
                           leading: IconButton(
+
+                            // mark the note as favorite and update it in cloud.
                             onPressed: () async {
                               await FirebaseDB().updateNote(note.id!,
                                   favorite: !note.favorite);
@@ -173,6 +189,8 @@ class _HomeViewState extends State<HomeView> {
                             style: getTextStyle(
                                 user.font, user.darkMode, user.fontSize),
                           ),
+                          // when user touch the note, user will be sent to new screen, where he can edit the note.
+                          // after coming back, the updated data will be synchronised with data in the cloud. 
                           onTap: () async {
                             final args = await Navigator.pushNamed(
                                     context, "newNote",
@@ -190,6 +208,7 @@ class _HomeViewState extends State<HomeView> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
+                                // this allows the user to share his note with someone.
                                 onPressed: () {
                                   Share.share("${note.title}:\n\n${note.text}");
                                 },
@@ -202,6 +221,7 @@ class _HomeViewState extends State<HomeView> {
                               ),
                               IconButton(
                                 onPressed: () async {
+                                  // ask the user if he is sure about deleting the note. if so, then delete the note in the cloud too. 
                                   final sure = await showAlertDialog(
                                       context, "delete this note");
                                   if (sure) {
@@ -231,6 +251,8 @@ class _HomeViewState extends State<HomeView> {
             },
           ),
           floatingActionButton: FloatingActionButton(
+            // this sends the user to a new screen, where he can create a new Note.
+            // after coming back the new note will be shown and sent to the cloud.
             onPressed: () async {
               final args = await Navigator.pushNamed(context, "newNote",
                   arguments: ["", ""]) as List<String>;
@@ -264,6 +286,7 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
+/// the drawer has a menu, where user can change settings, log out or delete the account permanently.
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
     super.key,
@@ -271,6 +294,7 @@ class MyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // this consumer catches any changes of the user, such as darkMode option.
     return Consumer<NotesUser>(builder: ((context, user, child) {
       return Drawer(
         backgroundColor:
@@ -314,6 +338,7 @@ class MyDrawer extends StatelessWidget {
                 ),
                 trailing: const Icon(Icons.logout),
                 onTap: () async {
+                  // ask user if sure about logging out, if so, log out the user.
                   bool sure = await showAlertDialog(context, "sign out");
                   sure == true ? await FirebaseAuthService().signOut() : null;
                 },
@@ -331,6 +356,8 @@ class MyDrawer extends StatelessWidget {
                 trailing: const Icon(Icons.delete_forever),
                 onTap: () async {
                   try {
+                    // if user wants to delete the account, all his notes will be first in cloud deleted.
+                    // then the user will be deleted as well.
                     final navigator = Navigator.of(context);
                     bool sure =
                         await showAlertDialog(context, "delete your accout");

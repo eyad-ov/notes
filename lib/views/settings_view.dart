@@ -4,6 +4,7 @@ import 'package:notes/data/notes_user.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 
+/// the screen lets user change the settings 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
 
@@ -41,6 +42,7 @@ class _SettingsViewState extends State<SettingsView> {
             trailing: Checkbox(
               value: user.darkMode,
               onChanged: (value) async {
+                // update the new mode in database
                 await FirebaseDB()
                     .updateUser(user.id, darkMode: value ?? false);
                 setState(() {
@@ -55,6 +57,7 @@ class _SettingsViewState extends State<SettingsView> {
               style: getTextStyle(user.font, user.darkMode, user.fontSize),
             ),
             onTap: () {
+              // sends the user to the screen where he can change email
               Navigator.pushNamed(context, "changeEmail", arguments: user);
             },
             trailing: const Icon(Icons.email),
@@ -65,6 +68,7 @@ class _SettingsViewState extends State<SettingsView> {
               style: getTextStyle(user.font, user.darkMode, user.fontSize),
             ),
             onTap: () {
+              //sends the user to the screen where he can change password
               Navigator.pushNamed(context, "changePassword", arguments: user);
             },
             trailing: const Icon(Icons.password),
@@ -75,6 +79,7 @@ class _SettingsViewState extends State<SettingsView> {
               style: getTextStyle(user.font, user.darkMode, user.fontSize),
             ),
             onTap: () {
+              // sends the user to the screen where he can change font
               Navigator.pushNamed(context, "changeFont", arguments: user);
             },
             trailing: const Icon(Icons.font_download),
@@ -92,6 +97,7 @@ class _SettingsViewState extends State<SettingsView> {
                   onPressed: () async {
                     double newSize = user.fontSize + 1;
                     if (newSize <= 40) {
+                      // update the font size in database
                       await FirebaseDB().updateUser(user.id, fontSize: newSize);
                       setState(() {
                         user.fontSize++;
@@ -108,6 +114,7 @@ class _SettingsViewState extends State<SettingsView> {
                   onPressed: () async {
                     double newSize = user.fontSize - 1;
                     if (newSize >= 10) {
+                      // update the font size in database
                       await FirebaseDB().updateUser(user.id, fontSize: newSize);
                       setState(() {
                         user.fontSize--;

@@ -8,6 +8,7 @@ import 'package:notes/views/show_message.dart';
 
 import '../services/authentication/exceptions.dart';
 
+/// this screen will be displayed when the user wants to change email
 class ChangeEmailView extends StatefulWidget {
   const ChangeEmailView({super.key});
 
@@ -103,6 +104,8 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: user.darkMode ? darkModeNoteColor : noteColor,
               ),
+
+              // update the user email
               onPressed: () async {
                 try {
                   final newEmail1 = _emailController1.text;
@@ -135,6 +138,7 @@ class _ChangeEmailViewState extends State<ChangeEmailView> {
     );
   }
 
+  /// shows snackbar to notify the user about success 
   void showSnackbar(String msg) {
     final snackBar = SnackBar(
       content: Text(msg),

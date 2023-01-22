@@ -4,6 +4,7 @@ import 'package:notes/views/show_message.dart';
 
 import '../services/authentication/firebase_auth_service.dart';
 
+/// the screen lets user enter an email to reset the password
 class ResetPasswordView extends StatefulWidget {
   const ResetPasswordView({super.key});
 
@@ -58,6 +59,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red.shade300,
               ),
+              // sends the email to user and if successed shows a snackbar
               onPressed: () async {
                 try {
                   final email = _emailController.text;
@@ -85,7 +87,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
       ),
     );
   }
-
+  /// notify user about success
   void showSnackbar(String msg) {
     final snackBar = SnackBar(
       content: Text(msg),

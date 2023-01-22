@@ -15,7 +15,7 @@ class NotesUser {
       required this.darkMode,
       required this.font,
       required this.fontSize});
-
+  ///Creates a user out of firebaseuser, which Firebase delivers.
   factory NotesUser.fromFirebaseUser(User firebaseUser) {
     return NotesUser(
         id: firebaseUser.uid,

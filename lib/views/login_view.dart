@@ -4,6 +4,7 @@ import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/views/show_message.dart';
 import 'package:notes/views/signup_view.dart';
 
+/// the screen lets the user log in
 class LogInView extends StatefulWidget {
   const LogInView({super.key});
 
@@ -30,8 +31,6 @@ class _LogInViewState extends State<LogInView> {
 
   @override
   Widget build(BuildContext context) {
-    //log in should last until user signs out
-
     if (signinOrLogin == 1) {
       return const SignUpView();
     } else {

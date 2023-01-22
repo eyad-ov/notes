@@ -6,7 +6,7 @@ import 'package:notes/services/authentication/firebase_auth_service.dart';
 import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 
-// fonts are too much try to make it only 20 fonts
+/// the screen lets user change the font
 class ChangeFontView extends StatefulWidget {
   const ChangeFontView({
     super.key,
@@ -61,6 +61,7 @@ class _ChangeFontViewState extends State<ChangeFontView> {
                   _font = value;
                 });
                 final user = FirebaseAuthService().user;
+                // update the font in database
                 await FirebaseDB().updateUser(user.id, font: value);
               }),
             );

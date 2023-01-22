@@ -6,6 +6,7 @@ import 'package:notes/services/database/firebase_db_service.dart';
 import 'package:notes/services/text_style.dart';
 import 'package:provider/provider.dart';
 
+/// the screen lets user create a new note or edit it
 class NewNoteVeiw extends StatefulWidget {
   const NewNoteVeiw({super.key});
 
@@ -39,6 +40,7 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
 
   @override
   Widget build(BuildContext context) {
+    // waits untils the user get fetched from database
     return FutureProvider(
       create: (context) => FirebaseDB().user,
       initialData: FirebaseAuthService().user,
@@ -93,6 +95,7 @@ class _NewNoteVeiwState extends State<NewNoteVeiw> {
               backgroundColor: user.darkMode
                   ? darkModeFloatingActionButtonBackgroundColor
                   : floatingActionButtonBackgroundColor,
+              // returns to home screen with the title and text as arguments
               onPressed: () {
                 final args = [_noteTitleController.text, _noteController.text];
                 Navigator.pop(context, args);

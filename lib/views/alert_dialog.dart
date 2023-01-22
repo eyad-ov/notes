@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// shows a dialog to user to let him choose what to do
 Future<bool> showAlertDialog(BuildContext context, String action) async {
   return await showDialog<bool?>(
           context: context,

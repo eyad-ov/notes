@@ -61,6 +61,7 @@ class NotesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // the screen being displayed depends on the state of user: logged in or out etc...
     return StreamBuilder(
         stream: FirebaseAuthService().trackUserAuthChanges(),
         builder: (context, snapshot) {
